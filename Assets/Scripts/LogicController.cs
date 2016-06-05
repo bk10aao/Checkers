@@ -29,7 +29,6 @@ namespace Application {
 
 		public bool canMoveDownAndRight (int x, int y, Board gameBoard) {
 			PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
-			Debug.Log ("Player piece: " + gameBoard.returnPlayerPiece (x, y));
 			if ((piece != null) && (piece.playerNo == 1 || piece.isKing == true) && ((y + 1 < 8) && (x + 1 < 8)) && gameBoard.returnPlayerPiece (x + 1, y + 1) == null) {
 				return true;
 			}
@@ -38,7 +37,6 @@ namespace Application {
 		
 		public bool canMoveDownAndLeft (int x, int y, Board gameBoard) {
 			PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
-			Debug.Log ("Player piece: " + gameBoard.returnPlayerPiece (x, y));
 			if ((piece != null) && (piece.playerNo == 1 || piece.isKing == true) && ((y - 1 > -1) && (x + 1 < 8)) && gameBoard.returnPlayerPiece (x + 1, y - 1) == null) {
 				return true;
 			}
@@ -55,7 +53,6 @@ namespace Application {
 		
 		public bool canMoveUpAndLeft (int x, int y, Board gameBoard) {
 			PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
-			Debug.Log ("Player piece: " + gameBoard.returnPlayerPiece (x, y));
 			if ((piece != null) && (piece.playerNo == 2 || piece.isKing == true) && ((y - 1 > -1) && (x - 1 > -1)) && gameBoard.returnPlayerPiece (x - 1, y - 1) == null) {
 				return true;
 			}

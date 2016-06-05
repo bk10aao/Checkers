@@ -26,7 +26,6 @@ namespace Application {
 		
 		void Start () {
 			gameBoard.SetupPlayerArray ();
-			Debug.Log ("setup board");
 			logicController = new LogicController (gameBoard);
 		}
 		
@@ -34,14 +33,10 @@ namespace Application {
 			takeablePieces.Clear ();
 			moveablePieces.Clear ();
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-			Debug.Log ("in update");
 
 			//WORKS PICKING UP AND PUTTING DOWN OBJECTS BUT NOT DRAGGING
 			if (Input.GetMouseButtonDown (0)) {
-				Debug.Log ("mouse button clicked");
 				if ((Physics.Raycast (ray, out hit)) && hit.collider.tag.Contains("Player") ) {	
-					Debug.Log ("player object hit");
-					Debug.Log ("start pos x: " + startPosX + " start pos z: " + startPosZ);
 					startPosX = hit.collider.transform.localPosition.x;
 					startPosZ = hit.collider.transform.localPosition.z;
 					interactionPiece = hit.collider.gameObject;
@@ -56,7 +51,6 @@ namespace Application {
 					}
 					else if (logicController.canMove((int)startPosX, (int)startPosZ, gameBoard)) {
 						if (interactionPiece.tag.Contains("Player" + playerNo.ToString())) {
-							Debug.Log("piece can move");
 							interactionPiece.transform.position = new Vector3 (hit.collider.transform.localPosition.x, 1.0f, hit.collider.transform.localPosition.z);
 						}
 						else {
@@ -72,7 +66,6 @@ namespace Application {
 				}
 			}
 			if (Input.GetMouseButtonUp (0) && interactionPiece != null && Physics.Raycast (ray, out hit)) {
-				Debug.Log ("mouse button released");
 				float tempz = hit.collider.transform.localPosition.z;
 				float tempx = hit.collider.transform.localPosition.x;
 				if (logicController.canTake ((int)startPosX, (int)startPosZ, gameBoard)) {

@@ -4,16 +4,8 @@ namespace Application {
 
 	[System.Serializable]
 	public class Board {
+
 		public PlayerPiece[,] boardPieces = new PlayerPiece[8, 8];
-
-		void Start () {
-
-		}
-		
-		// Update is called once per frame
-		void Update () {
-
-		}
 
 		public void SetupPlayerArray() {	
 			PlayerPiece piece;
@@ -56,30 +48,6 @@ namespace Application {
 			}
 		}
 
-		public void printBoard()
-		{
-			//string s = "";
-			int x = 0, y = 0;
-
-			while(x < 8) {
-				while(y < 8) {
-					if(boardPieces[x,y] == null) {
-					   //s+=" null ";
-					}
-					else {
-						//s += boardPieces[x,y].playerNo;
-					}
-					y++;
-				}
-				
-				//s += "\n";
-				x++;
-				y = 0;
-			}
-
-			//Debug.Log(s);
-		}
-
 		public GameObject CreatePlayerObject (int x, int y, int player, int count) {
 			GameObject cylinderTest = GameObject.CreatePrimitive (PrimitiveType.Cylinder);
 			cylinderTest.transform.position = new Vector3 (x, 0.1f, y);
@@ -92,7 +60,6 @@ namespace Application {
 				rend.material.color = Color.red;
 			else 
 				rend.material.color = Color.blue;
-			//Debug.Log ("Tag: " + cylinderTest.tag);
 
 			BoxCollider collider = cylinderTest.AddComponent<BoxCollider>();
 			collider.size = new Vector3 (1.0f, 1.0f, 1.0f);
@@ -112,7 +79,6 @@ namespace Application {
 
 		public void removePiece(int x, int y) {
 			boardPieces [x, y] = null;
-			Debug.Log ("removed a player Piece");
 		}
 
 		public void AddPlayerPiece(PlayerPiece piece, int x, int y) {
