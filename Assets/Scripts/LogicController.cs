@@ -6,8 +6,6 @@ namespace Application {
 	
 	public class LogicController : MonoBehaviour
 	{	
-
-
 		public  LogicController (Board gameBoard) {
 
 		}
