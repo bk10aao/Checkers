@@ -30,8 +30,7 @@ public class cameraController : MonoBehaviour {
 
 			endRot.z-= 90f;
 
-			while(time < 3f)
-			{
+			while(time < 3f) {
 				yield return new WaitForEndOfFrame();
 				time += Time.deltaTime;
 				//transform.localRotation.eulerAngles = Vector3.Lerp(startRot, endRot, time / 3f);

@@ -46,10 +46,20 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\Board.cs" />
-     <Compile Include="Assets\Scripts\Controller.cs" />
-     <Compile Include="Assets\Scripts\Controller1b.cs" />
-     <Compile Include="Assets\Scripts\Controller2.cs" />
-     <Compile Include="Assets\Scripts\Controller2Tests.cs" />
+     <Compile Include="Assets\Scripts\CameraTest2.cs" />
+     <Compile Include="Assets\Scripts\Controller12.cs" />
+     <Compile Include="Assets\Scripts\Controller13.cs" />
+     <Compile Include="Assets\Scripts\Controller14.cs" />
+     <Compile Include="Assets\Scripts\Controller15.cs" />
+     <Compile Include="Assets\Scripts\ControllerV10.cs" />
+     <Compile Include="Assets\Scripts\ControllerV11.cs" />
+     <Compile Include="Assets\Scripts\ControllerV12.cs" />
+     <Compile Include="Assets\Scripts\ControllerV13.cs" />
+     <Compile Include="Assets\Scripts\ControllerV2.cs" />
+     <Compile Include="Assets\Scripts\ControllerV3.cs" />
+     <Compile Include="Assets\Scripts\ControllerV4.cs" />
+     <Compile Include="Assets\Scripts\ControllerV5.cs" />
+     <Compile Include="Assets\Scripts\LogicController.cs" />
      <Compile Include="Assets\Scripts\PlayerPiece.cs" />
      <Compile Include="Assets\Scripts\cameraController.cs" />
      <None Include="Assets\Standard Assets\ParticleSystems\Shaders\PriorityParticleAlpha.shader" />
