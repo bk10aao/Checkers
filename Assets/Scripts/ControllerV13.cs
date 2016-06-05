@@ -43,10 +43,11 @@ namespace Application {
 
 					//this is redundant if statements???
 					if(logicController.playerHasTakeableMoves(playerNo, gameBoard) && (interactionPiece.tag.Contains("Player" + playerNo.ToString()) && canTake((int)startPosX, (int)startPosZ))) {
-							interactionPiece.transform.position = new Vector3 (hit.collider.transform.localPosition.x, 1.0f, hit.collider.transform.localPosition.z);
+						interactionPiece.transform.position = new Vector3 (hit.collider.transform.localPosition.x, 1.0f, hit.collider.transform.localPosition.z);
 					}
-					else if (logicController.canMove((int)startPosX, (int)startPosZ, gameBoard) && (interactionPiece.tag.Contains("Player" + playerNo.ToString()))) {
-							interactionPiece.transform.position = new Vector3 (hit.collider.transform.localPosition.x, 1.0f, hit.collider.transform.localPosition.z);
+					else if (logicController.canMove((int)startPosX, (int)startPosZ, gameBoard) && (interactionPiece.tag.Contains("Player" + playerNo.ToString())) && (!logicController.playerHasTakeableMoves(playerNo, gameBoard))) {
+						interactionPiece.transform.position = new Vector3 (hit.collider.transform.localPosition.x, 1.0f, hit.collider.transform.localPosition.z);
+
 					}
 					else {
 						interactionPiece = null;
