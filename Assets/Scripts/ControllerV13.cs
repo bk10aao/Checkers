@@ -161,9 +161,9 @@ namespace Application {
 			changePlayer();
 			pieceChangedToKing = true;
 		}
-		
+
 		private void takeUpAndRight (int x, int y, GameObject playerPiece) {
-			if (logicController.canTakeUpAndRight (x, y, gameBoard)) {
+			if (logicController.canTakeUpAndRight (x, y, gameBoard)) {;
 				PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
 				gameBoard.removePiece (x, y);
 				gameBoard.removePiece (x - 1, y + 1);
@@ -209,18 +209,22 @@ namespace Application {
 				}
 			}
 		}
+
+		private void updateGameBoardOnMove (int x, int y, int moveToPosX, int moveToPosY, int playerNumber, GameObject playerPiece, PlayerPiece piece) {
+			if (piece.playerNo == playerNumber || piece.isKing == true) {
+				gameBoard.removePiece (x, y);
+				gameBoard.AddPlayerPiece (piece, x + moveToPosX , y + moveToPosY);
+				if (piece.isKing == false && x + moveToPosX == 0) {
+					piece.isKing = true;
+					playerPiece.transform.localScale = new Vector3 (1.0f, 1.5f, 1.0f);
+				}
+			}
+		}
 		
 		private void moveDownAndRight (int x, int y, GameObject playerPiece) {
 			if (logicController.canMoveDownAndRight (x, y, gameBoard)) {
 				PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
-				if(piece.playerNo == 1 || piece.isKing == true) {
-					gameBoard.removePiece (x, y);
-					gameBoard.AddPlayerPiece (piece, x + 1, y + 1);
-					if(piece.isKing == false && x + 1 == 7) {
-						piece.isKing = true;
-						playerPiece.transform.localScale = new Vector3 (1.0f, 1.5f, 1.0f);
-					}
-				}
+				updateGameBoardOnMove(x, y, 1, 1, piece.playerNo, playerPiece, piece);
 				changePlayer();
 			}
 		}
@@ -228,15 +232,7 @@ namespace Application {
 		private void moveDownAndLeft (int x, int y, GameObject playerPiece) {
 			if (logicController.canMoveDownAndLeft (x, y, gameBoard)) {
 				PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
-				if(piece.playerNo == 1 || piece.isKing == true) {
-					gameBoard.removePiece (x, y);
-					gameBoard.AddPlayerPiece (piece, x + 1, y - 1);
-					if(piece.isKing == false && x + 1 == 7) {
-						piece.isKing = true;
-						playerPiece.transform.localScale = new Vector3 (1.0f, 1.5f, 1.0f);
-						
-					}
-				}
+				updateGameBoardOnMove(x, y, 1, -1, piece.playerNo, playerPiece, piece);
 				changePlayer();
 			}
 		}
@@ -244,29 +240,15 @@ namespace Application {
 		private void moveUpAndLeft (int x, int y, GameObject playerPiece) {
 			if (logicController.canMoveUpAndLeft (x, y, gameBoard)) {
 				PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
-				if(piece.playerNo == 2 || piece.isKing == true) {
-					gameBoard.removePiece (x, y);
-					gameBoard.AddPlayerPiece (piece, x - 1, y - 1);
-					if(piece.isKing == false && x - 1 == 0) {
-						piece.isKing = true;
-						playerPiece.transform.localScale = new Vector3 (1.0f, 1.5f, 1.0f);
-					}
-				}
+				updateGameBoardOnMove(x, y, -1, -1, piece.playerNo, playerPiece, piece);
 				changePlayer();
 			}
 		}
-		
+
 		private void moveUpAndRight (int x, int y, GameObject playerPiece) {
 			if (logicController.canMoveUpAndRight (x, y, gameBoard)) {
 				PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
-				if(piece.playerNo == 2 || piece.isKing == true) {
-					gameBoard.removePiece (x, y);
-					gameBoard.AddPlayerPiece (piece, x - 1, y + 1);
-					if(piece.isKing == false && x - 1 == 0) {
-						piece.isKing = true;
-						playerPiece.transform.localScale = new Vector3 (1.0f, 1.5f, 1.0f);
-					}
-				}
+				updateGameBoardOnMove(x, y, -1, 1, piece.playerNo, playerPiece, piece);
 				changePlayer();
 			}
 		}

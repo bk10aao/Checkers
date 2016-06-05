@@ -22,7 +22,7 @@ namespace Application {
 					if (y % 2 == 0 && x % 2 == 0) {
 						piece = new PlayerPiece(player, false);
 						boardPieces [x, y] = piece;
-						GameObject cylinderTest = CreatePlayerObject (x, y, player, count);
+						CreatePlayerObject (x, y, player, count);
 						count++;
 						y++;
 					}
@@ -31,7 +31,7 @@ namespace Application {
 						if (y % 2 == 1 && x % 2 == 1) {
 							piece = new PlayerPiece(player, false);
 							boardPieces [x, y] = piece;
-							GameObject cylinderTest = CreatePlayerObject (x, y, player, count);
+							CreatePlayerObject (x, y, player, count);
 							count++;
 							y++;
 						}
@@ -48,7 +48,7 @@ namespace Application {
 			}
 		}
 
-		public GameObject CreatePlayerObject (int x, int y, int player, int count) {
+		public void CreatePlayerObject (int x, int y, int player, int count) {
 			GameObject cylinderTest = GameObject.CreatePrimitive (PrimitiveType.Cylinder);
 			cylinderTest.transform.position = new Vector3 (x, 0.1f, y);
 			cylinderTest.transform.localScale = new Vector3 (1.0f, 0.075f, 1.0f);
@@ -64,8 +64,6 @@ namespace Application {
 			BoxCollider collider = cylinderTest.AddComponent<BoxCollider>();
 			collider.size = new Vector3 (1.0f, 1.0f, 1.0f);
 			cylinderTest.GetComponent<CapsuleCollider> ().enabled = false;
-
-			return cylinderTest;
 		}
 
 		public void DeletePlayerObject(int x, int y)
