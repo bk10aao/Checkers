@@ -40,22 +40,13 @@ namespace Application {
 					startPosX = hit.collider.transform.localPosition.x;
 					startPosZ = hit.collider.transform.localPosition.z;
 					interactionPiece = hit.collider.gameObject;
-					
-					if(logicController.playerHasTakeableMoves(playerNo, gameBoard)) {
-						if (interactionPiece.tag.Contains("Player" + playerNo.ToString()) && canTake((int)startPosX, (int)startPosZ)) {
+
+					//this is redundant if statements???
+					if(logicController.playerHasTakeableMoves(playerNo, gameBoard) && (interactionPiece.tag.Contains("Player" + playerNo.ToString()) && canTake((int)startPosX, (int)startPosZ))) {
 							interactionPiece.transform.position = new Vector3 (hit.collider.transform.localPosition.x, 1.0f, hit.collider.transform.localPosition.z);
-						}
-						else {
-							interactionPiece = null;
-						}
 					}
-					else if (logicController.canMove((int)startPosX, (int)startPosZ, gameBoard)) {
-						if (interactionPiece.tag.Contains("Player" + playerNo.ToString())) {
+					else if (logicController.canMove((int)startPosX, (int)startPosZ, gameBoard) && (interactionPiece.tag.Contains("Player" + playerNo.ToString()))) {
 							interactionPiece.transform.position = new Vector3 (hit.collider.transform.localPosition.x, 1.0f, hit.collider.transform.localPosition.z);
-						}
-						else {
-							interactionPiece = null;
-						}
 					}
 					else {
 						interactionPiece = null;
@@ -214,7 +205,7 @@ namespace Application {
 			if (piece.playerNo == playerNumber || piece.isKing == true) {
 				gameBoard.removePiece (x, y);
 				gameBoard.AddPlayerPiece (piece, x + moveToPosX , y + moveToPosY);
-				if (piece.isKing == false && x + moveToPosX == 0) {
+				if (piece.isKing == false && (x + moveToPosX == 0 || x + moveToPosX == 7)) {
 					piece.isKing = true;
 					playerPiece.transform.localScale = new Vector3 (1.0f, 1.5f, 1.0f);
 				}
