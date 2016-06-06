@@ -41,7 +41,6 @@ namespace Application {
 					startPosZ = hit.collider.transform.localPosition.z;
 					interactionPiece = hit.collider.gameObject;
 
-					//this is redundant if statements???
 					if(logicController.playerHasTakeableMoves(playerNo, gameBoard) && (interactionPiece.tag.Contains("Player" + playerNo.ToString()) && canTake((int)startPosX, (int)startPosZ))) {
 						interactionPiece.transform.position = new Vector3 (hit.collider.transform.localPosition.x, 1.0f, hit.collider.transform.localPosition.z);
 					}
