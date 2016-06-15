@@ -8,16 +8,16 @@ namespace Application {
 	public class LogicController : MonoBehaviour
 	{	
 		public  LogicController (Board gameBoard) {
-
+			
 		}
-
+		
 		public int getOpponent (int playerNo) {
 			if (playerNo == 1)
 				return 2;
 			else 
 				return 1;
 		}
-
+		
 		public bool canMove(int x, int y, Board gameBoard) {
 			return (canMoveDownAndLeft (x, y, gameBoard) || canMoveDownAndRight (x, y, gameBoard) || canMoveUpAndLeft (x, y, gameBoard) || canMoveUpAndRight (x, y, gameBoard));
 		}
@@ -25,7 +25,7 @@ namespace Application {
 		public bool canTake(int x, int y, Board gameBoard) {
 			return (canTakeUpAndLeft (x, y, gameBoard) || canTakeUpAndRight (x, y, gameBoard) || canTakeDownAndLeft (x, y, gameBoard) || canTakeDownAndRight (x, y, gameBoard));
 		}
-
+		
 		public bool canMoveDownAndRight (int x, int y, Board gameBoard) {
 			PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
 			if ((piece != null) && (piece.playerNo == 1 || piece.isKing == true) && ((y + 1 < 8) && (x + 1 < 8)) && gameBoard.returnPlayerPiece (x + 1, y + 1) == null) {
@@ -101,7 +101,7 @@ namespace Application {
 			}
 			return false;
 		}
-
+		
 		public Boolean playerHasTakeableMoves (int playerNumber, Board gameBoard) {
 			int i = 0, j = 0;
 			while (j < 8) {

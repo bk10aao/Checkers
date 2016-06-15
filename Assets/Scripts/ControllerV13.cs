@@ -18,15 +18,15 @@ namespace Application {
 		int playerNo = 1;
 		
 		Boolean pieceChangedToKing = false;
-
+		
 		private LogicController logicController;// = new LogicController ();
-
+		
 		List<PlayerPiece> moveablePieces = new List<PlayerPiece> (); //can be removed
 		List<PlayerPiece> takeablePieces = new List<PlayerPiece> (); //can be removed
-
+		
 		Boolean aiMoved = false;
 		Boolean aiTaken = false;
-
+		
 		Ray rayRay = new Ray();
 		
 		void Start () {
@@ -34,7 +34,7 @@ namespace Application {
 			logicController = new LogicController (gameBoard);
 			Debug.Log("checking if invalid mvoe piece can move!!! " + logicController.canMove(7,1, gameBoard));
 		}
-
+		
 		public void AITake() {
 			Debug.Log ("in AI move");
 			float i = 0, j = 0;
@@ -42,9 +42,9 @@ namespace Application {
 			
 			Ray aiRay = new Ray();
 			Ray destructionRay = new Ray ();
-
+			
 			while (j < 8 && !aiTaken) {
-				while(i < 8 && !aiMoved) {
+				while(i < 8 && !aiTaken) {
 					aiRay.origin = (new Vector3 (i, 1.0f, j));
 					aiRay.direction = (new Vector3 (0 , -1.0f, 0));
 					if ((Physics.Raycast (aiRay, out hit) && hit.collider.tag.Contains("Player2"))) {
@@ -53,9 +53,9 @@ namespace Application {
 						if (logicController.canTakeUpAndRight ((int)hit.transform.position.x, (int)hit.transform.position.z, gameBoard)) {
 							interactionPiece = hit.collider.gameObject;
 							takeUpAndRight ((int)hit.transform.position.x, (int)hit.transform.position.z, interactionPiece);
-
+							
 							destroyPieceAI((int)hit.transform.position.x, (int)hit.transform.position.z, -2.0f, 2.0f);
-
+							
 							interactionPiece.transform.position = new Vector3 (hit.transform.position.x - 1, 0.1f, hit.transform.position.z + 1);
 							aiTaken = true;
 							Debug.Log ("Ai taken up and right");
@@ -63,18 +63,18 @@ namespace Application {
 						else if(logicController.canTakeUpAndLeft ((int)hit.transform.position.x, (int)hit.transform.position.z, gameBoard)) {
 							interactionPiece = hit.collider.gameObject;
 							takeUpAndLeft ((int)hit.transform.position.x, (int)hit.transform.position.z, hit.collider.gameObject);
-
+							
 							destroyPieceAI((int)hit.transform.position.x, (int)hit.transform.position.z, -2.0f, -2.0f);
-
+							
 							hit.collider.gameObject.transform.position = (new Vector3 ((int)hit.transform.position.x - 1, 0.1f, (int)hit.transform.position.z - 1));
 							aiTaken = true;
 						}
 						else if(logicController.canTakeDownAndRight ((int)hit.transform.position.x, (int)hit.transform.position.z, gameBoard)) {
 							interactionPiece = hit.collider.gameObject;
 							takeDownAndRight ((int)hit.transform.position.x, (int)hit.transform.position.z, hit.collider.gameObject);
-
+							
 							destroyPieceAI((int)hit.transform.position.x, (int)hit.transform.position.z, 2.0f, 2.0f);
-
+							
 							hit.collider.gameObject.transform.position = (new Vector3 ((int)hit.transform.position.x + 1, 0.1f, (int)hit.transform.position.z + 1));
 							aiTaken = true;
 						}
@@ -82,7 +82,7 @@ namespace Application {
 							interactionPiece = hit.collider.gameObject;
 							takeDownAndLeft ((int)hit.transform.position.x, (int)hit.transform.position.z, hit.collider.gameObject);
 							destroyPieceAI((int)hit.transform.position.x, (int)hit.transform.position.z, 2.0f, -2.0f);
-
+							
 							hit.collider.gameObject.transform.position = (new Vector3 ((int)hit.transform.position.x + 1, 0.1f, (int)hit.transform.position.z - 1));
 							aiTaken = true;
 						}
@@ -94,19 +94,19 @@ namespace Application {
 			}
 			aiTaken = false;
 		}
-
+		
 		public void AIMove() {
 			Debug.Log ("in AI move");
 			float i = 0, j = 0;
 			System.Threading.Thread.Sleep(1000);
-
+			
 			Ray aiRay = new Ray();
 			while (j < 8 && !aiMoved) {
 				while(i < 8 && !aiMoved) {
 					aiRay.origin = (new Vector3 (i, 1.0f, j));
 					aiRay.direction = (new Vector3 (0 , -1.0f, 0));
 					if ((Physics.Raycast (aiRay, out hit) && hit.collider.tag.Contains("Player2"))) {
-
+						
 						Debug.Log ("Ai moving from x: " + (int)hit.transform.position.x + " z: " + (int)hit.transform.position.z);
 						if (logicController.canMoveUpAndRight ((int)hit.transform.position.x, (int)hit.transform.position.z, gameBoard)) {
 							interactionPiece = hit.collider.gameObject;
@@ -140,7 +140,7 @@ namespace Application {
 			}
 			aiMoved = false;
 		}
-
+		
 		void Update () {
 			takeablePieces.Clear ();
 			moveablePieces.Clear ();
@@ -150,7 +150,7 @@ namespace Application {
 				if(logicController.playerHasTakeableMoves(2, gameBoard)) {
 					AITake();
 				}
-				else {
+				else  {
 					AIMove();
 				}
 			} else {
@@ -160,12 +160,12 @@ namespace Application {
 						startPosX = hit.collider.transform.localPosition.x;
 						startPosZ = hit.collider.transform.localPosition.z;
 						interactionPiece = hit.collider.gameObject;
-
+						
 						if (logicController.playerHasTakeableMoves (playerNo, gameBoard) && (interactionPiece.tag.Contains ("Player" + playerNo.ToString ()) && canTake ((int)startPosX, (int)startPosZ))) {
 							interactionPiece.transform.position = new Vector3 (hit.collider.transform.localPosition.x, 1.0f, hit.collider.transform.localPosition.z);
 						} else if (logicController.canMove ((int)startPosX, (int)startPosZ, gameBoard) && (interactionPiece.tag.Contains ("Player" + playerNo.ToString ())) && (!logicController.playerHasTakeableMoves (playerNo, gameBoard))) {
 							interactionPiece.transform.position = new Vector3 (hit.collider.transform.localPosition.x, 1.0f, hit.collider.transform.localPosition.z);
-
+							
 						} else {
 							interactionPiece = null;
 						}
@@ -249,19 +249,21 @@ namespace Application {
 			if (Physics.Raycast (rayRay, out hit)) {
 				Destroy (hit.transform.gameObject);
 			}
-			if (!canTake ((int)startPosX + (int)directionX, (int)startPosZ + (int)directionZ) && pieceChangedToKing == false) {
+			if ((!canTake ((int)startPosX + (int)directionX, (int)startPosZ + (int)directionZ) && pieceChangedToKing == false)
+			    || startPosZ == 0 && !logicController.canMoveDownAndLeft((int)startPosX + (int)directionX, (int)startPosZ + (int)directionZ,gameBoard)) {
 				changePlayer ();
 			}
 		}
-
-		private void destroyPieceAI(float aiStartPosX, float aiStsrtPosZ, float directionX, float directionZ) {
-			interactionPiece.transform.position = new Vector3 (aiStartPosX + directionX, 0.1f, aiStsrtPosZ + directionZ);
-			rayRay.origin = new Vector3 (aiStartPosX, 0.1f, aiStsrtPosZ);
+		
+		private void destroyPieceAI(float aiStartPosX, float aiStartPosZ, float directionX, float directionZ) {
+			interactionPiece.transform.position = new Vector3 (aiStartPosX + directionX, 0.1f, aiStartPosZ + directionZ);
+			rayRay.origin = new Vector3 (aiStartPosX, 0.1f, aiStartPosZ);
 			rayRay.direction = new Vector3 (directionX, 0.1f, directionZ);
 			if (Physics.Raycast (rayRay, out hit)) {
 				Destroy (hit.transform.gameObject);
 			}
-			if (!canTake ((int)startPosX + (int)directionX, (int)startPosZ + (int)directionZ) && pieceChangedToKing == false) {
+			if ((!canTake ((int)aiStartPosX + (int)directionX, (int)aiStartPosZ + (int)directionZ) && pieceChangedToKing == false)
+			    && ((((int)aiStartPosX + (int)directionX) > -1) && (((int)aiStartPosX + (int)directionX) < 8) && (((int)aiStartPosZ + (int)directionZ) > -1) && (((int)aiStartPosZ + (int)directionZ) < 8))) {
 				changePlayer ();
 			}
 		}
@@ -280,35 +282,35 @@ namespace Application {
 			changePlayer();
 			pieceChangedToKing = true;
 		}
-
+		
 		void updateBoardOnTakeUpAndRight (int x, int y, PlayerPiece piece)
 		{
 			gameBoard.removePiece (x, y);
 			gameBoard.removePiece (x - 1, y + 1);
 			gameBoard.AddPlayerPiece (piece, x - 2, y + 2);
 		}
-
+		
 		void updateBoardOnTakeUpAndLeft (int x, int y, PlayerPiece piece)
 		{
 			gameBoard.removePiece (x, y);
 			gameBoard.removePiece (x - 1, y - 1);
 			gameBoard.AddPlayerPiece (piece, x - 2, y - 2);
 		}
-
+		
 		void updateBoardOnTakeDownAndLeft (int x, int y, PlayerPiece piece)
 		{
 			gameBoard.removePiece (x, y);
 			gameBoard.removePiece (x + 1, y - 1);
 			gameBoard.AddPlayerPiece (piece, x + 2, y - 2);
 		}
-
+		
 		void updateBoardOnTakeDownAndRight (int x, int y, PlayerPiece piece)
 		{
 			gameBoard.removePiece (x, y);
 			gameBoard.removePiece (x + 1, y + 1);
 			gameBoard.AddPlayerPiece (piece, x + 2, y + 2);
 		}
-
+		
 		private void takeUpAndRight (int x, int y, GameObject playerPiece) {
 			if (logicController.canTakeUpAndRight (x, y, gameBoard)) {;
 				PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
@@ -348,7 +350,7 @@ namespace Application {
 				}
 			}
 		}
-
+		
 		private void updateGameBoardOnMove (int x, int y, int moveToPosX, int moveToPosY, int playerNumber, GameObject playerPiece, PlayerPiece piece) {
 			if (piece.playerNo == playerNumber || piece.isKing == true) {
 				gameBoard.removePiece (x, y);
@@ -383,7 +385,7 @@ namespace Application {
 				changePlayer();
 			}
 		}
-
+		
 		private void moveUpAndRight (int x, int y, GameObject playerPiece) {
 			if (logicController.canMoveUpAndRight (x, y, gameBoard)) {
 				PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
