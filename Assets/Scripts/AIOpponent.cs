@@ -1,5 +1,6 @@
-﻿using UnityEngine;
+﻿/**using UnityEngine;
 using System.Collections;
+using System;
 
 namespace Application {
 
@@ -10,74 +11,45 @@ namespace Application {
 		Board gameBoard;
 		LogicController logicController;
 
-		public AIOpponent(Board gameBoard) {
-			gameBoard = this.gameBoard;
-			logicController = new LogicController (gameBoard);
+		Boolean aiTaken = false;
+
+		GameObject interactionPiece;
+
+		public AIOpponent() {
+
 		}
 
-		/**public void getMoveablePiecesInArray() {
-			moveablePieces = new ArrayList();
+		public void getAiMove (LogicController logicController, ControllerV13 gameContonroller, RaycastHit hit)
+		{
 
-			int i = 0, j = 0;
-
-			while (j < 8) {
-				while (i < 8) {
-					if ((logicController.canMoveDownAndLeft (i, j, gameBoard) || logicController.canMoveDownAndRight (i, j, gameBoard) || 
-					     logicController.canMoveUpAndLeft (i, j, gameBoard) || logicController.canMoveUpAndRight (i, j, gameBoard)) 
-					     && gameBoard.returnPlayerPiece (i, j).playerNo == 2) {
-
-						moveablePieces.Add(gameBoard.returnPlayerPiece(i,j));
-					}
-					i++;
-				}
-				j++;
-				i = 0;
+			if (logicController.canTakeUpAndRight ((int)hit.transform.position.x, (int)hit.transform.position.z, gameBoard)) {
+				interactionPiece = hit.collider.gameObject;
+				gameContonroller.takeUpAndRight ((int)hit.transform.position.x, (int)hit.transform.position.z, interactionPiece);
+				gameContonroller.destroyPieceAI ((int)hit.transform.position.x, (int)hit.transform.position.z, -2.0f, 2.0f);
+				interactionPiece.transform.position = new Vector3 (hit.transform.position.x - 1, 0.1f, hit.transform.position.z + 1);
+				aiTaken = true;
+			}
+			else if (logicController.canTakeUpAndLeft ((int)hit.transform.position.x, (int)hit.transform.position.z, gameBoard)) {
+				interactionPiece = hit.collider.gameObject;
+				gameContonroller.takeUpAndLeft ((int)hit.transform.position.x, (int)hit.transform.position.z, hit.collider.gameObject);
+				gameContonroller.destroyPieceAI ((int)hit.transform.position.x, (int)hit.transform.position.z, -2.0f, -2.0f);
+				hit.collider.gameObject.transform.position = (new Vector3 ((int)hit.transform.position.x - 1, 0.1f, (int)hit.transform.position.z - 1));
+				aiTaken = true;
+			}
+			else if (logicController.canTakeDownAndRight ((int)hit.transform.position.x, (int)hit.transform.position.z, gameBoard)) {
+				interactionPiece = hit.collider.gameObject;
+				gameContonroller.takeDownAndRight ((int)hit.transform.position.x, (int)hit.transform.position.z, hit.collider.gameObject);
+				gameContonroller.destroyPieceAI ((int)hit.transform.position.x, (int)hit.transform.position.z, 2.0f, 2.0f);
+				hit.collider.gameObject.transform.position = (new Vector3 ((int)hit.transform.position.x + 1, 0.1f, (int)hit.transform.position.z + 1));
+				aiTaken = true;
+			}
+			else if (logicController.canTakeDownAndLeft ((int)hit.transform.position.x, (int)hit.transform.position.z, gameBoard)) {
+				interactionPiece = hit.collider.gameObject;
+				gameContonroller.takeDownAndLeft ((int)hit.transform.position.x, (int)hit.transform.position.z, hit.collider.gameObject);
+				gameContonroller.destroyPieceAI ((int)hit.transform.position.x, (int)hit.transform.position.z, 2.0f, -2.0f);
+				hit.collider.gameObject.transform.position = (new Vector3 ((int)hit.transform.position.x + 1, 0.1f, (int)hit.transform.position.z - 1));
+				aiTaken = true;
 			}
 		}
-
-		public void getTakeablePieces() {
-			takeablePieces = new ArrayList ();
-
-			int i = 0, j = 0;
-							
-			while (j < 8) {
-				while (i < 8) {
-					if ((logicController.canTakeDownAndRight (i, j, gameBoard) || logicController.canTakeDownAndLeft (i, j, gameBoard) || 
-					     logicController.canTakeUpAndRight (i, j, gameBoard) || logicController.canTakeUpAndLeft (i, j, gameBoard)) 
-					     && gameBoard.returnPlayerPiece (i, j).playerNo == 2) {
-
-						takeablePieces.Add(gameBoard.returnPlayerPiece(i,j));
-					}
-					i++;
-				}
-				j++;
-				i = 0;
-			}
-		}
-
-		public void moveAIPiece() {
-			if (moveablePieces.Count > 0) {
-				PlayerPiece AIpiece = moveablePieces[0]; 
-
-				if (logicController.canMoveDownAndLeft(AIpiece.
-			}
-		}**/
 	}
-
-}
-/**
- * public Boolean playerHasTakeableMoves (int playerNumber, Board gameBoard) {
-			int i = 0, j = 0;
-			while (j < 8) {
-				while (i < 8) {
-					if ((canTakeDownAndRight (i, j, gameBoard) || canTakeDownAndLeft (i, j, gameBoard) || canTakeUpAndRight (i, j, gameBoard) || canTakeUpAndLeft (i, j, gameBoard)) && gameBoard.returnPlayerPiece (i, j).playerNo == playerNumber) {
-						return true;
-					}
-					i++;
-				}
-				j++;
-				i = 0;
-			}
-			return false;
-
- * **/
+}**/

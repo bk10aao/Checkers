@@ -15,10 +15,6 @@ public class PlayerPiece {
 		return playerNo;
 	}
 
-	public String PrintPlayer() {
-		return "Player Number: " + playerNo.ToString () + " is King? " + isKing.ToString() ;
-	}
-
 	public void SetKing () {
 		isKing = true;
 	}
