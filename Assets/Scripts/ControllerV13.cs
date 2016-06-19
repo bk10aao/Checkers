@@ -17,13 +17,14 @@ namespace Application {
 		
 		private int playerNo = 1;
 
-		int playerOnePiecesCount = 11, playerTwoPiecesCount = 11;
+		int playerTwoPiecesCount = 11;
 		
 		private Boolean pieceChangedToKing = false, aiTaken = false;
 		
 		private LogicController logicController;
 
 		private Queue<String> moveableAiPieces = new Queue<String>();
+		Boolean aiMoved = false;
 		
 		private void Start () {
 			gameBoard.SetupPlayerArray ();
@@ -145,7 +146,7 @@ namespace Application {
 		/** 
 		 * Comment out above and uncomment below code to implement depth first search
 		 * */
-		/**private void AIMove() {
+		private void AIMove() {
 			float i = 0, j = 0;
 			System.Threading.Thread.Sleep(1000);
 			
@@ -183,22 +184,38 @@ namespace Application {
 				i = 0;
 			}
 			aiMoved = false;
-		}**/
+		}
+
+		Vector3 distance;
+		float posX, posY;
+
+		void OnMouseDown() {
+			distance = Camera.main.WorldToScreenPoint (transform.position);
+			posX = Input.mousePosition.x - distance.x;
+			posY = Input.mousePosition.y - distance.y;
+		}
 		
+		void OnMouseDrag() {
+			Vector3 curPosistion = new Vector3 (Input.mousePosition.x - posX, Input.mousePosition.y - posY, distance.z);
+			
+			Vector3 worldPos = Camera.main.ScreenToWorldPoint (curPosistion);
+			transform.position = worldPos;
+		}
+
 		private void Update () {
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 			if (playerNo == 2) {
-				if(logicController.playerHasTakeableMoves(2, gameBoard) && 	playerTwoPiecesCount > -1) {
+				if(logicController.playerHasTakeableMoves(2, gameBoard) && 	playerTwoPiecesCount > 01) {
 					AITake();
 					//comment out bline below when implementing depth first search
 					getAIQueueMoves();
 				}
 				else  {
-					//comment out bline below when implementing depth first search
-					AIQueueMove();
-					getAIQueueMoves();
+					//comment out lines below when implementing depth first search
+					//AIQueueMove();
+					//getAIQueueMoves();
 					//uncomment line below to implement deth first search
-					//AIMove();
+					AIMove();
 				}
 			} else {
 				//WORKS PICKING UP AND PUTTING DOWN OBJECTS BUT NOT DRAGGING
@@ -276,11 +293,11 @@ namespace Application {
 				takeDownAndLeft ((int)startPosX, (int)startPosZ, interactionPiece);
 				destroyPiece(startPosX, startPosZ, 2.0f, -2.0f);
 			}
-			else if ((tempx < startPosX) && ((tempz - startPosZ < -1.5) && (tempz - startPosZ > -3)) && (tempx - startPosX < -1) && logicController.canTakeUpAndLeft ((int)startPosX, (int)startPosZ, gameBoard)) {
+			else if ((tempx < startPosX) && ((tempz - startPosZ < -1.5) && (tempz - startPosZ > -2.5)) && (tempx - startPosX < -1) && logicController.canTakeUpAndLeft ((int)startPosX, (int)startPosZ, gameBoard)) {
 				takeUpAndLeft ((int)startPosX, (int)startPosZ, interactionPiece);
 				destroyPiece(startPosX, startPosZ, -2.0f, -2.0f);
 			}
-			else if ((tempx < startPosX) && ((tempz - startPosZ > 1.5) && (tempz - startPosZ < 3)) && (tempx - startPosX < -1) && logicController.canTakeUpAndRight ((int)startPosX, (int)startPosZ, gameBoard)) {
+			else if ((tempx < startPosX) && ((tempz - startPosZ > 1.5) && (tempz - startPosZ < 2.5)) && (tempx - startPosX < -1) && logicController.canTakeUpAndRight ((int)startPosX, (int)startPosZ, gameBoard)) {
 				takeUpAndRight ((int)startPosX, (int)startPosZ, interactionPiece);
 				destroyPiece(startPosX, startPosZ, -2.0f, 2.0f);
 			}
@@ -297,7 +314,9 @@ namespace Application {
 				Destroy (hit.transform.gameObject);
 			}
 			if ((!canTake ((int)aiStartPosX + (int)directionX, (int)aiStartPosZ + (int)directionZ) && pieceChangedToKing == false)
-			    && ((((int)aiStartPosX + (int)directionX) > -1) && (((int)aiStartPosX + (int)directionX) < 8) && (((int)aiStartPosZ + (int)directionZ) > -1) && (((int)aiStartPosZ + (int)directionZ) < 8))) {
+			    && ((((int)aiStartPosX + (int)directionX) > -1) 
+			    && (((int)aiStartPosX + (int)directionX) < 8) && (((int)aiStartPosZ + (int)directionZ) > -1) 
+			    && (((int)aiStartPosZ + (int)directionZ) < 8))) {
 				changePlayer ();
 			}
 		}
@@ -324,7 +343,8 @@ namespace Application {
 			gameBoard.AddPlayerPiece (piece, x + emptyXPos, y + emptyYPos);
 			if (piece.isKing == false && (x + emptyXPos == 0 || x + emptyXPos == 7)) {
 				piece.isKing = true;
-				playerPiece.transform.localScale = new Vector3 (1.0f, 1.5f, 1.0f);
+				transformPieceToKing(piece, playerPiece);
+				//playerPiece.transform.localScale = new Vector3 (1.0f, 1.5f, 1.0f);
 			}
 		}
 		
