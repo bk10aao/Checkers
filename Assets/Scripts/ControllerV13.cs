@@ -8,21 +8,23 @@ namespace Application {
 	public class ControllerV13 : MonoBehaviour {
 		public Board gameBoard = new Board();
 		
-		private RaycastHit hit;
+		private RaycastHit hit, hit2;
 		private Ray rayRay = new Ray();
-
+		
 		private GameObject interactionPiece;
 		
 		private float startPosX, startPosZ;
 		
 		private int playerNo = 1;
 
+		private int aiPieceStartPosX, aiPieceStartPosZ;
+		
 		int playerTwoPiecesCount = 11;
 		
 		private Boolean pieceChangedToKing = false, aiTaken = false;
 		
 		private LogicController logicController;
-
+		
 		private Queue<String> moveableAiPieces = new Queue<String>();
 		Boolean aiMoved = false;
 		
@@ -31,16 +33,34 @@ namespace Application {
 			logicController = new LogicController (gameBoard);
 			getAIQueueMoves ();
 		}
+		
+
+		
+		private bool moveWithAiPiece (int x, int z) {
+			hit.collider.gameObject.transform.position = (new Vector3 (hit.transform.position.x + x, 0.1f, hit.transform.position.z + z));
+			if (hit.transform.position.x + x == 0) {
+				transformPieceToKing(gameBoard.returnPlayerPiece((int)this.hit.transform.position.x + x,
+				                                                 (int)this.hit.transform.position.z + z), 
+			                      						  hit.collider.gameObject);
+				Debug.Log ("transforming piece to king after move");
+			}
+			return true;
+		}
 
 		private void takeWithAiPiece (RaycastHit hit, int moveToXPos, int moveToZPos, int enemyXPos, int enemyZPos ) {
 			destroyPiece ((int)hit.transform.position.x, (int)hit.transform.position.z, moveToXPos, moveToZPos);
 			hit.collider.gameObject.transform.position = new Vector3 (this.hit.transform.position.x + enemyXPos, 0.1f, this.hit.transform.position.z + enemyZPos );
 			aiTaken = true;
-		}
 
-		private bool moveWithAiPiece (int x, int z) {
-			hit.collider.gameObject.transform.position = (new Vector3 (hit.transform.position.x + x, 0.1f, hit.transform.position.z + z));
-			return true;
+			rayRay.origin = new Vector3 ((float)aiPieceStartPosX + moveToXPos, 1.0f, aiPieceStartPosZ + moveToZPos +(float)moveToZPos);
+			rayRay.direction = (new Vector3 (0 , -1.0f, 0));
+			Physics.Raycast (rayRay, out hit2);
+			if (moveToXPos == 0) {
+				transformPieceToKing(gameBoard.returnPlayerPiece(moveToXPos,
+				                                                 moveToZPos), 
+				                     							 hit2.collider.gameObject);
+				Debug.Log ("transforming piece to king after take");
+			}
 		}
 		
 		private void AITake() {
@@ -55,6 +75,8 @@ namespace Application {
 						interactionPiece = hit.collider.gameObject;
 						if (logicController.canTakeUpAndRight ((int)hit.transform.position.x, (int)hit.transform.position.z, gameBoard)) {
 							takeUpAndRight ((int)hit.transform.position.x, (int)hit.transform.position.z, hit.collider.gameObject);
+							aiPieceStartPosX = (int)hit.transform.position.x;
+							aiPieceStartPosZ = (int)hit.transform.position.z;
 							takeWithAiPiece (hit, -2, 2, -1, 1);
 							playerTwoPiecesCount--;
 						}
@@ -81,7 +103,7 @@ namespace Application {
 			}
 			aiTaken = false;
 		}
-
+		
 		private void getAIQueueMoves() {
 			float i = 0, j = 0;
 			System.Threading.Thread.Sleep(1000);
@@ -114,38 +136,6 @@ namespace Application {
 			}
 		}
 
-		private void AIQueueMove() {
-			Boolean hasMovedFromQueue = false;
-
-			while(!hasMovedFromQueue) {
-				String s = moveableAiPieces.Dequeue ().ToString();
-
-				String[] positions = s.Split(',');
-
-				rayRay.origin = (new Vector3 (Int32.Parse(positions[0]), 1.0f, Int32.Parse(positions[1])));
-				rayRay.direction = (new Vector3 (0 , -1.0f, 0));
-				if ((Physics.Raycast (rayRay, out hit) && hit.collider.tag.Contains ("Player2"))) {
-					if (logicController.canMoveUpAndRight ((int)hit.transform.position.x, (int)hit.transform.position.z, gameBoard)) {
-						moveUpAndRight ((int)hit.transform.position.x, (int)hit.transform.position.z, hit.collider.gameObject);
-						hasMovedFromQueue = moveWithAiPiece (-1, 1);
-					} else if (logicController.canMoveUpAndLeft ((int)hit.transform.position.x, (int)hit.transform.position.z, gameBoard)) {
-						moveUpAndLeft ((int)hit.transform.position.x, (int)hit.transform.position.z, hit.collider.gameObject);
-						hasMovedFromQueue = moveWithAiPiece(-1, -1);
-					} else if (logicController.canMoveDownAndRight ((int)hit.transform.position.x, (int)hit.transform.position.z, gameBoard)) {
-						moveDownAndRight ((int)hit.transform.position.x, (int)hit.transform.position.z, hit.collider.gameObject);
-
-						hasMovedFromQueue = moveWithAiPiece(1, -1);
-					} else if (logicController.canMoveDownAndLeft ((int)hit.transform.position.x, (int)hit.transform.position.z, gameBoard)) {
-						moveDownAndLeft ((int)hit.transform.position.x, (int)hit.transform.position.z, hit.collider.gameObject);
-						hasMovedFromQueue = moveWithAiPiece(1, 1);
-					}
-				}	
-			}
-		}
-
-		/** 
-		 * Comment out above and uncomment below code to implement depth first search
-		 * */
 		private void AIMove() {
 			float i = 0, j = 0;
 			System.Threading.Thread.Sleep(1000);
@@ -158,21 +148,41 @@ namespace Application {
 					if ((Physics.Raycast (aiRay, out hit) && hit.collider.tag.Contains("Player2"))) {
 						
 						if (logicController.canMoveUpAndRight ((int)hit.transform.position.x, (int)hit.transform.position.z, gameBoard)) {
+							//moveWithAiPiece((int)hit.transform.position.x, (int)hit.transform.position.z);
 							moveUpAndRight ((int)hit.transform.position.x, (int)hit.transform.position.z, interactionPiece);
 							hit.collider.gameObject.transform.position = new Vector3 (hit.transform.position.x - 1, 0.1f, hit.transform.position.z + 1);
+							aiRay.origin = new Vector3(hit.transform.position.x - 1.0f, 1.0f, hit.transform.position.z);
+							aiRay.direction = new Vector3(0, -1.0f, 0);
+							Physics.Raycast (aiRay, out hit2);
+							if(((int)hit2.transform.position.x - 1) == 0)
+							{
+								transformPieceToKing(gameBoard.returnPlayerPiece((int)hit2.transform.position.x, (int)hit2.transform.position.z),
+								                     hit2.collider.gameObject); 
+							}
 							aiMoved = true;
 						}
 						else if(logicController.canMoveUpAndLeft ((int)hit.transform.position.x, (int)hit.transform.position.z, gameBoard)) {
+							//moveWithAiPiece((int)hit.transform.position.x, (int)hit.transform.position.z);
 							moveUpAndLeft ((int)hit.transform.position.x, (int)hit.transform.position.z, hit.collider.gameObject);
 							hit.collider.gameObject.transform.position = (new Vector3 ((int)hit.transform.position.x - 1, 0.1f, (int)hit.transform.position.z - 1));
 							aiMoved = true;
+							if(((int)hit2.transform.position.x - 1) == 0)
+							{
+								aiRay.origin = new Vector3(hit.transform.position.x - 1.0f, 1.0f, hit.transform.position.z);
+								aiRay.direction = new Vector3(0, -1.0f, 0);
+								Physics.Raycast (aiRay, out hit2);
+								transformPieceToKing(gameBoard.returnPlayerPiece((int)hit2.transform.position.x, (int)hit2.transform.position.z),
+								                     hit2.collider.gameObject); 
+							}
 						}
 						else if(logicController.canMoveDownAndRight ((int)hit.transform.position.x, (int)hit.transform.position.z, gameBoard)) {
+							//moveWithAiPiece((int)hit.transform.position.x, (int)hit.transform.position.z);
 							moveDownAndRight ((int)hit.transform.position.x, (int)hit.transform.position.z, hit.collider.gameObject);
 							hit.collider.gameObject.transform.position = (new Vector3 ((int)hit.transform.position.x + 1, 0.1f, (int)hit.transform.position.z + 1));
 							aiMoved = true;
 						}
 						else if(logicController.canMoveDownAndLeft ((int)hit.transform.position.x, (int)hit.transform.position.z, gameBoard)) {
+							//moveWithAiPiece((int)hit.transform.position.x, (int)hit.transform.position.z);
 							moveDownAndLeft ((int)hit.transform.position.x, (int)hit.transform.position.z, hit.collider.gameObject);
 							hit.collider.gameObject.transform.position = (new Vector3 ((int)hit.transform.position.x + 1, 0.1f, (int)hit.transform.position.z - 1));
 							aiMoved = true;
@@ -185,10 +195,77 @@ namespace Application {
 			}
 			aiMoved = false;
 		}
+		
+		private void AIQueueMove() {
+			Boolean hasMovedFromQueue = false;
+			Ray aiRay = new Ray();
+			while(!hasMovedFromQueue) {
+				String s = moveableAiPieces.Dequeue ().ToString();
+				
+				String[] positions = s.Split(',');
+				
+				aiRay.origin = (new Vector3 (Int32.Parse(positions[0]), 1.0f, Int32.Parse(positions[1])));
+				aiRay.direction = (new Vector3 (0 , -1.0f, 0));
+				if ((Physics.Raycast (aiRay, out hit) && hit.collider.tag.Contains("Player2"))) {
+					
+					if (logicController.canMoveUpAndRight ((int)hit.transform.position.x, (int)hit.transform.position.z, gameBoard)) {
+						//moveWithAiPiece((int)hit.transform.position.x, (int)hit.transform.position.z);
+						moveUpAndRight ((int)hit.transform.position.x, (int)hit.transform.position.z, interactionPiece);
+						hit.collider.gameObject.transform.position = new Vector3 (hit.transform.position.x - 1, 0.1f, hit.transform.position.z + 1);
+						aiRay.origin = new Vector3(hit.transform.position.x - 1.0f, 1.0f, hit.transform.position.z);
+						aiRay.direction = new Vector3(0, -1.0f, 0);
+						Physics.Raycast (aiRay, out hit2);
+						if(((int)hit2.transform.position.x - 1) == 0)
+						{
+							transformPieceToKing(gameBoard.returnPlayerPiece((int)hit2.transform.position.x, (int)hit2.transform.position.z),
+							                     hit2.collider.gameObject); 
+						}
+						aiMoved = true;
+						hasMovedFromQueue = true;
+					}
+					else if(logicController.canMoveUpAndLeft ((int)hit.transform.position.x, (int)hit.transform.position.z, gameBoard)) {
+						//moveWithAiPiece((int)hit.transform.position.x, (int)hit.transform.position.z);
+						moveUpAndLeft ((int)hit.transform.position.x, (int)hit.transform.position.z, hit.collider.gameObject);
+						hit.collider.gameObject.transform.position = (new Vector3 ((int)hit.transform.position.x - 1, 0.1f, (int)hit.transform.position.z - 1));
+						aiMoved = true;
+						if(((int)hit2.transform.position.x - 1) == 0)
+						{
+							aiRay.origin = new Vector3(hit.transform.position.x - 1.0f, 1.0f, hit.transform.position.z);
+							aiRay.direction = new Vector3(0, -1.0f, 0);
+							Physics.Raycast (aiRay, out hit2);
+							transformPieceToKing(gameBoard.returnPlayerPiece((int)hit2.transform.position.x, (int)hit2.transform.position.z),
+							                     hit2.collider.gameObject); 
+						}
+						aiMoved = true;
+						hasMovedFromQueue = true;
+					}
+					else if(logicController.canMoveDownAndRight ((int)hit.transform.position.x, (int)hit.transform.position.z, gameBoard)) {
+						//moveWithAiPiece((int)hit.transform.position.x, (int)hit.transform.position.z);
+						moveDownAndRight ((int)hit.transform.position.x, (int)hit.transform.position.z, hit.collider.gameObject);
+						hit.collider.gameObject.transform.position = (new Vector3 ((int)hit.transform.position.x + 1, 0.1f, (int)hit.transform.position.z + 1));
+						aiMoved = true;
+						hasMovedFromQueue = true;
+					}
+					else if(logicController.canMoveDownAndLeft ((int)hit.transform.position.x, (int)hit.transform.position.z, gameBoard)) {
+						//moveWithAiPiece((int)hit.transform.position.x, (int)hit.transform.position.z);
+						moveDownAndLeft ((int)hit.transform.position.x, (int)hit.transform.position.z, hit.collider.gameObject);
+						hit.collider.gameObject.transform.position = (new Vector3 ((int)hit.transform.position.x + 1, 0.1f, (int)hit.transform.position.z - 1));
+						aiMoved = true;
+						hasMovedFromQueue = true;
+					}
+				}	
+			}
+			aiMoved = false;
+		}
 
+	
+		/** 
+		 * Comment out above and uncomment below code to implement depth first search
+		 * */
+		
 		Vector3 distance;
 		float posX, posY;
-
+		
 		void OnMouseDown() {
 			distance = Camera.main.WorldToScreenPoint (transform.position);
 			posX = Input.mousePosition.x - distance.x;
@@ -201,7 +278,7 @@ namespace Application {
 			Vector3 worldPos = Camera.main.ScreenToWorldPoint (curPosistion);
 			transform.position = worldPos;
 		}
-
+		
 		private void Update () {
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 			if (playerNo == 2) {
@@ -212,10 +289,10 @@ namespace Application {
 				}
 				else  {
 					//comment out lines below when implementing depth first search
-					//AIQueueMove();
-					//getAIQueueMoves();
-					//uncomment line below to implement deth first search
-					AIMove();
+					AIQueueMove();
+					getAIQueueMoves();
+					//uncomment line below to implement depth first search
+					//AIMove();
 				}
 			} else {
 				//WORKS PICKING UP AND PUTTING DOWN OBJECTS BUT NOT DRAGGING
@@ -329,13 +406,17 @@ namespace Application {
 			pieceChangedToKing = false;
 		}
 		
-		private void transformPieceToKing(PlayerPiece piece, GameObject playerPiece) {
-			piece.isKing = true;
-			playerPiece.transform.localScale = new Vector3 (1.0f, 1.5f, 1.0f);
-			changePlayer();
-			pieceChangedToKing = true;
+		private void transformPieceToKing(PlayerPiece piece, GameObject playerPiece)  {
+			try {
+				piece.isKing = true;
+				playerPiece.transform.localScale = new Vector3 (1.0f, 1.5f, 1.0f);
+				changePlayer();
+				pieceChangedToKing = true;
+			} catch (Exception e) {
+				//do nothing
+			}
 		}
-
+		
 		private void updateBoardOnTake(int x, int y, int enemyXPos, int enemyYPos, int emptyXPos, int emptyYPos, GameObject playerPiece) {
 			PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
 			gameBoard.removePiece (x, y);
