@@ -24,8 +24,6 @@ namespace Application {
 		
 		private Queue<String> moveableAiPieces = new Queue<String>();
 
-		//TODO when an opponent piece is transformed to a king it no longer takes
-
 		private void Start () {
 			gameBoard.SetupPlayerArray ();
 			logicController = new LogicController (gameBoard);
@@ -395,7 +393,11 @@ namespace Application {
 			}
 		}
 
-		/**private void updateBoardOnMove (int x, int y, int moveToPosX, int moveToPosY, GameObject playerPiece) {
+
+	}
+}
+
+/**private void updateBoardOnMove (int x, int y, int moveToPosX, int moveToPosY, GameObject playerPiece) {
 			PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
 			if (piece.playerNo == playerNo|| piece.isKing == true) {
 				gameBoard.removePiece (x, y);
@@ -406,149 +408,139 @@ namespace Application {
 					changePlayer ();
 				}
 			}
-		}**/
+	}
 
-		/**private void moveDownAndRight (int x, int y, GameObject playerPiece) {
-			if (logicController.canMoveDownAndRight (x, y, gameBoard)) {
-				updateBoardOnMove(x, y, 1, 1, playerPiece);
-			}
-		}
-		
-		private void moveDownAndLeft (int x, int y, GameObject playerPiece) {
-			if (logicController.canMoveDownAndLeft (x, y, gameBoard)) {
-				updateBoardOnMove(x, y, 1, -1, playerPiece);
-			}
-		}
-		
-		private void moveUpAndLeft (int x, int y, GameObject playerPiece) {
-			if (logicController.canMoveUpAndLeft (x, y, gameBoard)) {
-				updateBoardOnMove(x, y, -1, -1, playerPiece);
-			}
-		}
-		
-		private void moveUpAndRight (int x, int y, GameObject playerPiece) {
-			if (logicController.canMoveUpAndRight (x, y, gameBoard)) {
-				updateBoardOnMove(x, y, -1, 1, playerPiece);
-			}
-		}**/
+pivte void moveDownAndRight (int x, int y, GameObject playerPiece) {
+	if (logicController.canMoveDownAndRight (x, y, gameBoard)) {
+		updateBoardOnMove(x, y, 1, 1, playerPiece);
 	}
 }
 
+pivte void moveDownAndLeft (int x, int y, GameObject playerPiece) {
+	if (logicController.canMoveDownAndLeft (x, y, gameBoard)) {
+		updateBoardOnMove(x, y, 1, -1, playerPiece);
+	}
+}
 
+pivte void moveUpAndLeft (int x, int y, GameObject playerPiece) {
+	if (logicController.canMoveUpAndLeft (x, y, gameBoard)) {
+		updateBoardOnMove(x, y, -1, -1, playerPiece);
+	}
+}
 
+pivte void moveUpAndRight (int x, int y, GameObject playerPiece) {
+	if (logicController.canMoveUpAndRight (x, y, gameBoard)) {
+		updateBoardOnMove(x, y, -1, 1, playerPiece);
+	}
+}
+	
+ void updateBoardOnTakeUpAndRight (int x, int y, PlayerPiece piece)
+{
+	gameBoard.removePiece (x, y);
+	gameBoard.removePiece (x - 1, y + 1);
+	gameBoard.AddPlayerPiece (piece, x - 2, y + 2);
+}
 
+vidupdateBoardOnTakeUpAndLeft (int x, int y, PlayerPiece piece)
+{
+	gameBoard.removePiece (x, y);
+	gameBoard.removePiece (x - 1, y - 1);
+	gameBoard.AddPlayerPiece (piece, x - 2, y - 2);
+}
 
+vidupdateBoardOnTakeDownAndLeft (int x, int y, PlayerPiece piece)
+{
+	gameBoard.removePiece (x, y);
+	gameBoard.removePiece (x + 1, y - 1);
+	gameBoard.AddPlayerPiece (piece, x + 2, y - 2);
+}
 
+vidupdateBoardOnTakeDownAndRight (int x, int y, PlayerPiece piece)
+{
+	gameBoard.removePiece (x, y);
+	gameBoard.removePiece (x + 1, y + 1);
+	gameBoard.AddPlayerPiece (piece, x + 2, y + 2);
+}
 
-
-		/**
- 		 * void updateBoardOnTakeUpAndRight (int x, int y, PlayerPiece piece)
-		{
-			gameBoard.removePiece (x, y);
-			gameBoard.removePiece (x - 1, y + 1);
-			gameBoard.AddPlayerPiece (piece, x - 2, y + 2);
+pivte void takeUpAndRight (int x, int y, GameObject playerPiece) {
+	if (logicController.canTakeUpAndRight (x, y, gameBoard)) {;
+		PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
+		updateBoardOnTakeUpAndRight (x, y, piece);
+		if(piece.isKing == false && x-2 == 0) {
+			transformPieceToKing(piece, playerPiece);
 		}
+	}
+}
 
-		void updateBoardOnTakeUpAndLeft (int x, int y, PlayerPiece piece)
-		{
-			gameBoard.removePiece (x, y);
-			gameBoard.removePiece (x - 1, y - 1);
-			gameBoard.AddPlayerPiece (piece, x - 2, y - 2);
+private void takeUpAndLeft (int x, int y, GameObject playerPiece) {
+	if (logicController.canTakeUpAndLeft (x, y, gameBoard)) {
+		PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
+		updateBoardOnTakeUpAndLeft (x, y, piece);
+		if(piece.isKing == false && x - 2  == 0) {
+			transformPieceToKing(piece, playerPiece);
 		}
+	}
+}
 
-		void updateBoardOnTakeDownAndLeft (int x, int y, PlayerPiece piece)
-		{
-			gameBoard.removePiece (x, y);
-			gameBoard.removePiece (x + 1, y - 1);
-			gameBoard.AddPlayerPiece (piece, x + 2, y - 2);
+private void takeDownAndLeft(int x, int y, GameObject playerPiece) {
+	if (logicController.canTakeDownAndLeft (x, y, gameBoard)) {
+		PlayerPiece piece = gameBoard.returnPlayerPiece(x, y);
+		updateBoardOnTakeDownAndLeft (x, y, piece);
+		if(piece.isKing == false && x + 2 == 7) {
+			transformPieceToKing(piece, playerPiece);
 		}
+	}
+}
 
-		void updateBoardOnTakeDownAndRight (int x, int y, PlayerPiece piece)
-		{
-			gameBoard.removePiece (x, y);
-			gameBoard.removePiece (x + 1, y + 1);
-			gameBoard.AddPlayerPiece (piece, x + 2, y + 2);
+private void takeDownAndRight (int x, int y, GameObject playerPiece) {
+	if (logicController.canTakeDownAndRight (x, y, gameBoard)) {
+		PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
+		updateBoardOnTakeDownAndRight (x, y, piece);
+		if(piece.isKing == false && x + 2 == 7) {
+			transformPieceToKing(piece, playerPiece);
 		}
+	}
+}
 
-		private void takeUpAndRight (int x, int y, GameObject playerPiece) {
-			if (logicController.canTakeUpAndRight (x, y, gameBoard)) {;
-				PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
-				updateBoardOnTakeUpAndRight (x, y, piece);
-				if(piece.isKing == false && x-2 == 0) {
-					transformPieceToKing(piece, playerPiece);
-				}
-			}
+pivte void updateGameBoardOnMove (int x, int y, int moveToPosX, int moveToPosY, int playerNumber, GameObject playerPiece, PlayerPiece piece) {
+	if (piece.playerNo == playerNumber || piece.isKing == true) {
+		gameBoard.removePiece (x, y);
+		gameBoard.AddPlayerPiece (piece, x + moveToPosX , y + moveToPosY);
+		if (piece.isKing == false && (x + moveToPosX == 0 || x + moveToPosX == 7)) {
+			piece.isKing = true;
+			playerPiece.transform.localScale = new Vector3 (1.0f, 1.5f, 1.0f);
 		}
-		
-		private void takeUpAndLeft (int x, int y, GameObject playerPiece) {
-			if (logicController.canTakeUpAndLeft (x, y, gameBoard)) {
-				PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
-				updateBoardOnTakeUpAndLeft (x, y, piece);
-				if(piece.isKing == false && x - 2  == 0) {
-					transformPieceToKing(piece, playerPiece);
-				}
-			}
-		}
-		
-		private void takeDownAndLeft(int x, int y, GameObject playerPiece) {
-			if (logicController.canTakeDownAndLeft (x, y, gameBoard)) {
-				PlayerPiece piece = gameBoard.returnPlayerPiece(x, y);
-				updateBoardOnTakeDownAndLeft (x, y, piece);
-				if(piece.isKing == false && x + 2 == 7) {
-					transformPieceToKing(piece, playerPiece);
-				}
-			}
-		}
-		
-		private void takeDownAndRight (int x, int y, GameObject playerPiece) {
-			if (logicController.canTakeDownAndRight (x, y, gameBoard)) {
-				PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
-				updateBoardOnTakeDownAndRight (x, y, piece);
-				if(piece.isKing == false && x + 2 == 7) {
-					transformPieceToKing(piece, playerPiece);
-				}
-			}
-		}
+	}
+}
 
-		private void updateGameBoardOnMove (int x, int y, int moveToPosX, int moveToPosY, int playerNumber, GameObject playerPiece, PlayerPiece piece) {
-			if (piece.playerNo == playerNumber || piece.isKing == true) {
-				gameBoard.removePiece (x, y);
-				gameBoard.AddPlayerPiece (piece, x + moveToPosX , y + moveToPosY);
-				if (piece.isKing == false && (x + moveToPosX == 0 || x + moveToPosX == 7)) {
-					piece.isKing = true;
-					playerPiece.transform.localScale = new Vector3 (1.0f, 1.5f, 1.0f);
-				}
-			}
-		}
-		
-		private void moveDownAndRight (int x, int y, GameObject playerPiece) {
-			if (logicController.canMoveDownAndRight (x, y, gameBoard)) {
-				PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
-				updateGameBoardOnMove(x, y, 1, 1, piece.playerNo, playerPiece, piece);
-				changePlayer();
-			}
-		}
-		
-		private void moveDownAndLeft (int x, int y, GameObject playerPiece) {
-			if (logicController.canMoveDownAndLeft (x, y, gameBoard)) {
-				PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
-				updateGameBoardOnMove(x, y, 1, -1, piece.playerNo, playerPiece, piece);
-				changePlayer();
-			}
-		}
-		
-		private void moveUpAndLeft (int x, int y, GameObject playerPiece) {
-			if (logicController.canMoveUpAndLeft (x, y, gameBoard)) {
-				PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
-				updateGameBoardOnMove(x, y, -1, -1, piece.playerNo, playerPiece, piece);
-				changePlayer();
-			}
-		}
+private void moveDownAndRight (int x, int y, GameObject playerPiece) {
+	if (logicController.canMoveDownAndRight (x, y, gameBoard)) {
+		PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
+		updateGameBoardOnMove(x, y, 1, 1, piece.playerNo, playerPiece, piece);
+		changePlayer();
+	}
+}
 
-		private void moveUpAndRight (int x, int y, GameObject playerPiece) {
-			if (logicController.canMoveUpAndRight (x, y, gameBoard)) {
-				PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
-				updateGameBoardOnMove(x, y, -1, 1, piece.playerNo, playerPiece, piece);
-				changePlayer();
-			}
-		}*/
+private void moveDownAndLeft (int x, int y, GameObject playerPiece) {
+	if (logicController.canMoveDownAndLeft (x, y, gameBoard)) {
+		PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
+		updateGameBoardOnMove(x, y, 1, -1, piece.playerNo, playerPiece, piece);
+		changePlayer();
+	}
+}
+
+private void moveUpAndLeft (int x, int y, GameObject playerPiece) {
+	if (logicController.canMoveUpAndLeft (x, y, gameBoard)) {
+		PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
+		updateGameBoardOnMove(x, y, -1, -1, piece.playerNo, playerPiece, piece);
+		changePlayer();
+	}
+}
+
+pivte void moveUpAndRight (int x, int y, GameObject playerPiece) {
+	if (logicController.canMoveUpAndRight (x, y, gameBoard)) {
+		PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
+		updateGameBoardOnMove(x, y, -1, 1, piece.playerNo, playerPiece, piece);
+		changePlayer();
+	}
+}*/
