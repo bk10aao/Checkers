@@ -30,27 +30,6 @@ namespace Application {
 			logicController = new LogicController (gameBoard);
 			getAIQueueMoves ();
 		}
-
-		private bool moveWithAiPiece (int x, int z) {
-			hit.collider.gameObject.transform.position = (new Vector3 (hit.transform.position.x + x, 0.1f, hit.transform.position.z + z));
-			if (hit.transform.position.x + x == 0) {
-				transformPieceToKing(gameBoard.returnPlayerPiece((int)this.hit.transform.position.x + x, (int)this.hit.transform.position.z + z), hit.collider.gameObject);
-			}
-			return true;
-		}
-
-		private void takeWithAiPiece (RaycastHit hit, int moveToXPos, int moveToZPos, int enemyXPos, int enemyZPos ) {
-			destroyPiece ((int)hit.transform.position.x, (int)hit.transform.position.z, moveToXPos, moveToZPos);
-			hit.collider.gameObject.transform.position = new Vector3 (this.hit.transform.position.x + enemyXPos, 0.1f, this.hit.transform.position.z + enemyZPos );
-			aiTaken = true;
-
-			rayRay.origin = new Vector3 ((float)aiPieceStartPosX + moveToXPos, 1.0f, aiPieceStartPosZ + moveToZPos +(float)moveToZPos); //TODO: HUH?
-			rayRay.direction = (new Vector3 (0 , -1.0f, 0));
-			Physics.Raycast (rayRay, out hit2);
-			if (moveToXPos == 0) {
-				transformPieceToKing(gameBoard.returnPlayerPiece(moveToXPos, moveToZPos), hit2.collider.gameObject);
-			}
-		}
 		
 		private void AITake() {
 			float i = 0, j = 0;
@@ -88,6 +67,19 @@ namespace Application {
 				i = 0;
 			}
 			aiTaken = false;
+		}
+
+		private void takeWithAiPiece (RaycastHit hit, int moveToXPos, int moveToZPos, int enemyXPos, int enemyZPos ) {
+			destroyPiece ((int)hit.transform.position.x, (int)hit.transform.position.z, moveToXPos, moveToZPos);
+			hit.collider.gameObject.transform.position = new Vector3 (this.hit.transform.position.x + enemyXPos, 0.1f, this.hit.transform.position.z + enemyZPos );
+			aiTaken = true;
+
+			rayRay.origin = new Vector3 ((float)aiPieceStartPosX + moveToXPos, 1.0f, aiPieceStartPosZ + moveToZPos +(float)moveToZPos); //TODO: HUH?
+			rayRay.direction = (new Vector3 (0 , -1.0f, 0));
+			Physics.Raycast (rayRay, out hit2);
+			if (moveToXPos == 0) {
+				transformPieceToKing(gameBoard.returnPlayerPiece(moveToXPos, moveToZPos), hit2.collider.gameObject);
+			}
 		}
 		
 		private void getAIQueueMoves() {
@@ -181,6 +173,14 @@ namespace Application {
 				}	
 			}
 		}
+			
+		private bool moveWithAiPiece (int x, int z) {
+			hit.collider.gameObject.transform.position = (new Vector3 (hit.transform.position.x + x, 0.1f, hit.transform.position.z + z));
+			if (hit.transform.position.x + x == 0) {
+				transformPieceToKing(gameBoard.returnPlayerPiece((int)this.hit.transform.position.x + x, (int)this.hit.transform.position.z + z), hit.collider.gameObject);
+			}
+			return true;
+		}
 		
 		private void Update () {
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
@@ -238,19 +238,15 @@ namespace Application {
 		private void move (int tempx, int tempz) {
 			interactionPiece.transform.position = new Vector3(startPosX, 0.1f, startPosZ);
 			if ((tempx > startPosX) && ((tempz - startPosZ) < 1.5) && ((tempz - startPosZ) > 0) && (tempx - startPosX > 0) && (tempx - startPosX < 1.5) && logicController.canMoveDownAndRight ((int)startPosX, (int)startPosZ, gameBoard)) {
-				//updateBoardOnMove((int)startPosX, (int)startPosZ, 1, 1, interactionPiece);
 				moveDownAndRight((int)startPosX, (int)startPosZ, interactionPiece);
 				interactionPiece.transform.position = new Vector3 (tempx, 0.1f, tempz);
 			} else if ((tempx > startPosX) && ((tempz - startPosZ) < 0) && ((tempz - startPosZ) > -1.5) && (tempx - startPosX > 0) && (tempx - startPosX < 1.5) && logicController.canMoveDownAndLeft ((int)startPosX, (int)startPosZ, gameBoard)) {
-				//updateBoardOnMove((int)startPosX, (int)startPosZ, 1, -1, interactionPiece);
 				moveDownAndLeft((int)startPosX, (int)startPosZ, interactionPiece);
 				interactionPiece.transform.position = new Vector3 (tempx, 0.1f, tempz);
 			} else if ((tempx < startPosX) && ((tempz - startPosZ) < 1.5) && ((tempz - startPosZ) > 0) && ((tempz - startPosZ) < 1.5) && (tempx - startPosX < 0) && (tempx - startPosX > -1.5) && logicController.canMoveUpAndRight ((int)startPosX, (int)startPosZ, gameBoard)) {
-				//updateBoardOnMove((int)startPosX, (int)startPosZ, -1, 1, interactionPiece);
 				moveUpAndRight((int)startPosX, (int)startPosZ, interactionPiece);
 				interactionPiece.transform.position = new Vector3 (tempx, 0.1f, tempz);
 			} else if ((tempx < startPosX) && ((tempz - startPosZ) < 0) && ((tempz - startPosZ) > -1.5) && ((tempz - startPosZ) < 0) && (tempx - startPosX < 0) && (tempx - startPosX > -1.5) && logicController.canMoveUpAndLeft ((int)startPosX, (int)startPosZ, gameBoard)) {
-				//updateBoardOnMove((int)startPosX, (int)startPosZ, -1, -1, interactionPiece);
 				moveUpAndLeft((int)startPosX, (int)startPosZ, interactionPiece);
 				interactionPiece.transform.position = new Vector3 (tempx, 0.1f, tempz);
 			}
@@ -287,7 +283,8 @@ namespace Application {
 			}
 			if ((!canTake ((int)aiStartPosX + (int)directionX, (int)aiStartPosZ + (int)directionZ) && pieceChangedToKing == false)
 			    && ((((int)aiStartPosX + (int)directionX) > -1) 
-			    && (((int)aiStartPosX + (int)directionX) < 8) && (((int)aiStartPosZ + (int)directionZ) > -1) 
+			    && (((int)aiStartPosX + (int)directionX) < 8) 
+				&& (((int)aiStartPosZ + (int)directionZ) > -1) 
 			    && (((int)aiStartPosZ + (int)directionZ) < 8))) {
 				changePlayer ();
 			}
@@ -389,8 +386,6 @@ namespace Application {
 				changePlayer ();
 			}
 		}
-
-
 	}
 }
 
