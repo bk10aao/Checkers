@@ -7,6 +7,7 @@ namespace Application {
 	
 	public class ControllerV13 : MonoBehaviour {
 
+
 		public Board gameBoard = new Board();
 		
 		private RaycastHit hit, hit2;
@@ -64,22 +65,18 @@ namespace Application {
 						aiPieceStartPosX = (int)hit.transform.position.x;
 						aiPieceStartPosZ = (int)hit.transform.position.z;
 						if (logicController.canTakeUpAndRight ((int)hit.transform.position.x, (int)hit.transform.position.z, gameBoard)) {
-							Debug.Log ("can take up and right");
 							takeUpAndRight ((int)hit.transform.position.x, (int)hit.transform.position.z, hit.collider.gameObject);
 							takeWithAiPiece (hit, -2, 2, -1, 1);
 							playerTwoPiecesCount--;
 						} else if(logicController.canTakeUpAndLeft ((int)hit.transform.position.x, (int)hit.transform.position.z, gameBoard)) {
-							Debug.Log ("can take up and left");
 							takeUpAndLeft ((int)hit.transform.position.x, (int)hit.transform.position.z, hit.collider.gameObject);
 							takeWithAiPiece (hit, -2, -2, -1, -1);
 							playerTwoPiecesCount--;
 						} else if(logicController.canTakeDownAndRight ((int)hit.transform.position.x, (int)hit.transform.position.z, gameBoard)) {
-							Debug.Log ("can take down and right");
 							takeDownAndRight ((int)hit.transform.position.x, (int)hit.transform.position.z, hit.collider.gameObject);
 							takeWithAiPiece (hit, 2, 2, 1, 1);
 							playerTwoPiecesCount--;
 						} else if(logicController.canTakeDownAndLeft ((int)hit.transform.position.x, (int)hit.transform.position.z, gameBoard)) {
-							Debug.Log ("can take down and left");
 							takeDownAndLeft ((int)hit.transform.position.x, (int)hit.transform.position.z, hit.collider.gameObject);
 							takeWithAiPiece (hit, 2, -2, 1, -1);
 							playerTwoPiecesCount--;

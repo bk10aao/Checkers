@@ -5,7 +5,7 @@ using System;
 
 namespace Application {
 	
-	public class LogicController : MonoBehaviour
+	public class LogicController
 	{	
 		public  LogicController (Board gameBoard) {
 			

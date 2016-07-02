@@ -21,7 +21,6 @@ namespace Application {
 
 		public void getAiMove (LogicController logicController, ControllerV13 gameContonroller, RaycastHit hit)
 		{
-
 			if (logicController.canTakeUpAndRight ((int)hit.transform.position.x, (int)hit.transform.position.z, gameBoard)) {
 				interactionPiece = hit.collider.gameObject;
 				gameContonroller.takeUpAndRight ((int)hit.transform.position.x, (int)hit.transform.position.z, interactionPiece);
