@@ -47,4 +47,15 @@ To switch between breadth-first and depth-first algorithms the following changes
 				} else {
 					AIMove();
 				}
-			}```
+			} ```
+
+``` if (playerNo == 2) {
+				if(logicController.playerHasTakeableMoves(2, gameBoard)) {
+					AITake();
+					getAIQueueMoves();
+				} else {
+					AIQueueMove();
+					getAIQueueMoves();
+
+				}
+			} ```
