@@ -28,7 +28,8 @@ To switch between breadth-first and depth-first algorithms the following changes
 
 ### Breadth-first search:
 
-``` if (playerNo == 2) {
+``` 
+if (playerNo == 2) {
 				if(logicController.playerHasTakeableMoves(2, gameBoard)) {
 					AITake();
 					getAIQueueMoves();
@@ -37,42 +38,20 @@ To switch between breadth-first and depth-first algorithms the following changes
 					getAIQueueMoves();
 
 				}
-			} ```
+			} 
+```
 
 ###Depth-first search:
 
-``` if (playerNo == 2) {
+``` 
+if (playerNo == 2) {
 				if(logicController.playerHasTakeableMoves(2, gameBoard)) {
 					AITake();
 				} else {
 					AIMove();
 				}
-			} ```
-
-``` if (playerNo == 2) {
-				if(logicController.playerHasTakeableMoves(2, gameBoard)) {
-					AITake();
-					getAIQueueMoves();
-				} else {
-					AIQueueMove();
-					getAIQueueMoves();
-
-				}
-			} ```
+			}
 
 
 
-```javascript
-var s = "JavaScript syntax highlighting";
-alert(s);
-```
- 
-```python
-s = "Python syntax highlighting"
-print s
-```
- 
-```
-No language indicated, so no syntax highlighting. 
-But let's throw in a <b>tag</b>.
-```
+``` 
