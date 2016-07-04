@@ -402,59 +402,59 @@ namespace Application {
 			}
 	}
 
-pivte void moveDownAndRight (int x, int y, GameObject playerPiece) {
+private void moveDownAndRight (int x, int y, GameObject playerPiece) {
 	if (logicController.canMoveDownAndRight (x, y, gameBoard)) {
 		updateBoardOnMove(x, y, 1, 1, playerPiece);
 	}
 }
 
-pivte void moveDownAndLeft (int x, int y, GameObject playerPiece) {
+private void moveDownAndLeft (int x, int y, GameObject playerPiece) {
 	if (logicController.canMoveDownAndLeft (x, y, gameBoard)) {
 		updateBoardOnMove(x, y, 1, -1, playerPiece);
 	}
 }
 
-pivte void moveUpAndLeft (int x, int y, GameObject playerPiece) {
+pivate void moveUpAndLeft (int x, int y, GameObject playerPiece) {
 	if (logicController.canMoveUpAndLeft (x, y, gameBoard)) {
 		updateBoardOnMove(x, y, -1, -1, playerPiece);
 	}
 }
 
-pivte void moveUpAndRight (int x, int y, GameObject playerPiece) {
+pivate void moveUpAndRight (int x, int y, GameObject playerPiece) {
 	if (logicController.canMoveUpAndRight (x, y, gameBoard)) {
 		updateBoardOnMove(x, y, -1, 1, playerPiece);
 	}
 }
 	
- void updateBoardOnTakeUpAndRight (int x, int y, PlayerPiece piece)
+private void updateBoardOnTakeUpAndRight (int x, int y, PlayerPiece piece)
 {
 	gameBoard.removePiece (x, y);
 	gameBoard.removePiece (x - 1, y + 1);
 	gameBoard.AddPlayerPiece (piece, x - 2, y + 2);
 }
 
-vidupdateBoardOnTakeUpAndLeft (int x, int y, PlayerPiece piece)
+private void updateBoardOnTakeUpAndLeft (int x, int y, PlayerPiece piece)
 {
 	gameBoard.removePiece (x, y);
 	gameBoard.removePiece (x - 1, y - 1);
 	gameBoard.AddPlayerPiece (piece, x - 2, y - 2);
 }
 
-vidupdateBoardOnTakeDownAndLeft (int x, int y, PlayerPiece piece)
+private void updateBoardOnTakeDownAndLeft (int x, int y, PlayerPiece piece)
 {
 	gameBoard.removePiece (x, y);
 	gameBoard.removePiece (x + 1, y - 1);
 	gameBoard.AddPlayerPiece (piece, x + 2, y - 2);
 }
 
-vidupdateBoardOnTakeDownAndRight (int x, int y, PlayerPiece piece)
+private void updateBoardOnTakeDownAndRight (int x, int y, PlayerPiece piece)
 {
 	gameBoard.removePiece (x, y);
 	gameBoard.removePiece (x + 1, y + 1);
 	gameBoard.AddPlayerPiece (piece, x + 2, y + 2);
 }
 
-pivte void takeUpAndRight (int x, int y, GameObject playerPiece) {
+private void takeUpAndRight (int x, int y, GameObject playerPiece) {
 	if (logicController.canTakeUpAndRight (x, y, gameBoard)) {;
 		PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
 		updateBoardOnTakeUpAndRight (x, y, piece);
@@ -494,7 +494,7 @@ private void takeDownAndRight (int x, int y, GameObject playerPiece) {
 	}
 }
 
-pivte void updateGameBoardOnMove (int x, int y, int moveToPosX, int moveToPosY, int playerNumber, GameObject playerPiece, PlayerPiece piece) {
+private void updateGameBoardOnMove (int x, int y, int moveToPosX, int moveToPosY, int playerNumber, GameObject playerPiece, PlayerPiece piece) {
 	if (piece.playerNo == playerNumber || piece.isKing == true) {
 		gameBoard.removePiece (x, y);
 		gameBoard.AddPlayerPiece (piece, x + moveToPosX , y + moveToPosY);
@@ -529,7 +529,7 @@ private void moveUpAndLeft (int x, int y, GameObject playerPiece) {
 	}
 }
 
-pivte void moveUpAndRight (int x, int y, GameObject playerPiece) {
+private void moveUpAndRight (int x, int y, GameObject playerPiece) {
 	if (logicController.canMoveUpAndRight (x, y, gameBoard)) {
 		PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
 		updateGameBoardOnMove(x, y, -1, 1, piece.playerNo, playerPiece, piece);
