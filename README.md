@@ -17,7 +17,7 @@ To switch between breadth-first and depth-first algorithms the following changes
 	if (playerNo == 2) {
 		if(logicController.playerHasTakeableMoves(2, gameBoard)) {
 			AITake();
-			//comment out bline below when implementing depth first search
+			//comment out line below when implementing depth first search
 			getAIQueueMoves();
 		} else {
 			//comment out lines below when implementing depth first search
