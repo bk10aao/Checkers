@@ -1,6 +1,6 @@
 # Checkers
 
-This project is designed within Unity and developed to currently implement two AI opponents, a breadth-first search based opponent and a depth-first search opponent.
+This project is designed within Unity and developed to currently implement two AI opponents, breadth-first search based and depth-first search opponent.
 
 This was developed using version unity-5.3.5.
 
