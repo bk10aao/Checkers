@@ -299,7 +299,7 @@ namespace Application {
 		}
 
 		//TODO playerPiece isn't used therefor this is causing the wronf transformation as it has been assigned else where.
-		//It is just being taken and past straight through without any assignment/changed inside the code
+		//It is just being taken and passed straight through without any assignment/changed inside the code
 		private void updateBoardOnTake(int x, int y, int enemyXPos, int enemyYPos, int emptyXPos, int emptyYPos, GameObject playerPiece) {
 			PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
 			gameBoard.removePiece (x, y);
