@@ -1,18 +1,10 @@
 using UnityEngine;
 using System.Collections;
 namespace Application {
-	
-	//[System.Serializable]
+
 	public class Board {
 		
 		public PlayerPiece[,] boardPieces = new PlayerPiece[8, 8];
-
-		Material player1Material, player2Material;
-
-		public void Start() {
-			player1Material = Resources.Load("image1") as Material;
-			player2Material = Resources.Load("image2") as Material;
-		}
 
 		public void SetupPlayerArray() {	
 			PlayerPiece piece;
@@ -29,16 +21,13 @@ namespace Application {
 					if (y % 2 == 0 && x % 2 == 0) {
 						piece = new PlayerPiece(player, false);
 						boardPieces [x, y] = piece;
-						//CreatePlayerObject (x, y, player, count);
 						count++;
 						y++;
 					}
-					else
-					{
+					else {
 						if (y % 2 == 1 && x % 2 == 1) {
 							piece = new PlayerPiece(player, false);
 							boardPieces [x, y] = piece;
-							//CreatePlayerObject (x, y, player, count);
 							count++;
 							y++;
 						}
@@ -54,23 +43,6 @@ namespace Application {
 				}
 			}
 		}
-		
-		/**public void CreatePlayerObject (int x, int y, int player, int count) {
-			GameObject cylinderTest = GameObject.CreatePrimitive (PrimitiveType.Cylinder);
-			cylinderTest.transform.position = new Vector3 (x, 0.1f, y);
-			cylinderTest.transform.localScale = new Vector3 (1.0f, 0.075f, 1.0f);
-			cylinderTest.tag = "Player" + player.ToString() + "-" + count;
-			Renderer rend = cylinderTest.GetComponent<Renderer> ();
-			
-			if (player == 1)
-				rend.material.color = Color.red;
-			else 
-				rend.material.color = Color.blue;
-			
-			BoxCollider collider = cylinderTest.AddComponent<BoxCollider>();
-			collider.size = new Vector3 (1.0f, 1.0f, 1.0f);
-			cylinderTest.GetComponent<CapsuleCollider> ().enabled = false;
-		}**/
 		
 		public void DeletePlayerObject(int x, int y)
 		{
@@ -91,5 +63,3 @@ namespace Application {
 		
 	}
 }
-
-
