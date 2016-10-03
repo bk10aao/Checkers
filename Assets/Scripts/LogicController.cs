@@ -10,6 +10,7 @@ namespace Application {
 		public  LogicController (Board gameBoard) {
 			
 		}
+		//TEST
 		
 		public int getOpponent (int playerNo) {
 			if (playerNo == 1)
