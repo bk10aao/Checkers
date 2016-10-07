@@ -31,12 +31,12 @@ namespace Application {
 			if (playerNo == 2) {
 
 				//below section is breadth first search
-				/**if(logicController.playerHasTakeableMoves(2, gameBoard)) {
-					AITake();
-				} else {
-					AIQueueMove();
-				}
-				getAIQueueMoves(); **/
+//				if(logicController.playerHasTakeableMoves(2, gameBoard) && playerTwoPiecesCount > -1 ) {
+//					AITake();
+//				} else if (playerTwoPiecesCount > -1) {
+//					AIQueueMove();
+//					getAIQueueMoves();
+//				}	 
 
 				//below section is depth first search
 				if (playerNo == 2) {
@@ -67,6 +67,7 @@ namespace Application {
 				if (Input.GetMouseButtonUp (0) && interactionPiece != null && Physics.Raycast (ray, out hit)) {
 					if (logicController.canTake (startPosX, startPosZ, gameBoard)) {
 						take (hit.collider.transform.localPosition.x, hit.collider.transform.localPosition.z);
+						playerTwoPiecesCount--;
 					} else if (logicController.canMove (startPosX, startPosZ, gameBoard)) {
 						move ((int)hit.collider.transform.localPosition.x, (int)hit.collider.transform.localPosition.z);
 					} else {
@@ -112,7 +113,6 @@ namespace Application {
 				i = 0;
 			}
 			Found: ;
-			playerTwoPiecesCount--;
 		}
 
 		private void takeWithAiPiece (RaycastHit hit, int moveToXPos, int moveToZPos, int enemyXPos, int enemyZPos ) {
