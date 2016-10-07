@@ -15,10 +15,6 @@ public class PlayerPiece {
 		return playerNo;
 	}
 
-	public void SetKing () {
-		isKing = true;
-	}
-
 	public Boolean CheckIsKing() {
 		return isKing;
 	}

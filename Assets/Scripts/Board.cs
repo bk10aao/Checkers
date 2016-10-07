@@ -44,11 +44,6 @@ namespace Application {
 			}
 		}
 		
-		public void DeletePlayerObject(int x, int y)
-		{
-			GameObject.Destroy (GameObject.FindWithTag (x + "-" + y));
-		}
-		
 		public PlayerPiece returnPlayerPiece(int x, int y) {
 			return boardPieces [x, y];
 		}
