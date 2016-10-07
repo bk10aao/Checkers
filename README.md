@@ -14,43 +14,48 @@ To switch between breadth-first and depth-first algorithms the following changes
 ### Original code
 
 ``` 
-	if (playerNo == 2) {
-		if(logicController.playerHasTakeableMoves(2, gameBoard)) {
-			AITake();
-			//comment out line below when implementing depth first search
-			getAIQueueMoves();
-		} else {
-			//comment out lines below when implementing depth first search
-			AIQueueMove();
-			getAIQueueMoves();
-			//uncomment line below to implement depth first search
-			//AIMove();
-		}
-	} 
+if (playerNo == 2) {
+
+				//below section is breadth first search
+				/**if(logicController.playerHasTakeableMoves(2, gameBoard) && playerTwoPiecesCount > -1 ) {
+					AITake();
+				} else if (playerTwoPiecesCount > -1) {
+					AIQueueMove();
+					getAIQueueMoves();
+				}**/	 
+
+				//below section is depth first search
+				if (playerNo == 2) {
+					if(logicController.playerHasTakeableMoves(2, gameBoard)) {
+						AITake();
+					} else {
+						AIMove();
+					}
+				}
+			}
 ```
 
 ### Breadth-first search:
 
 ``` 
-if (playerNo == 2) {
-	if(logicController.playerHasTakeableMoves(2, gameBoard)) {
-		AITake();
-	} else {
-		AIQueueMove();
-	}
-	
-	getAIQueueMoves();
-} 
+	if (playerNo == 2) {
+		if(logicController.playerHasTakeableMoves(2, gameBoard) && playerTwoPiecesCount > -1 ) {
+			AITake();
+		} else if (playerTwoPiecesCount > -1) {
+			AIQueueMove();
+			getAIQueueMoves();
+		}
+	} 
 ```
 
 ###Depth-first search:
 
 ``` 
-if (playerNo == 2) {
-	if(logicController.playerHasTakeableMoves(2, gameBoard)) {
-		AITake();
-	} else {
-		AIMove();
+	if (playerNo == 2) {
+		if(logicController.playerHasTakeableMoves(2, gameBoard)) {
+			AITake();
+		} else {
+			AIMove();
+		}
 	}
-}
 ``` 
