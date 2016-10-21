@@ -7,7 +7,7 @@ namespace Application {
 	
 	public class LogicController
 	{	
-		public  LogicController (Board gameBoard) {
+		public  LogicController () {
 			
 		}
 

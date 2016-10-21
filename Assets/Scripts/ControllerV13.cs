@@ -21,7 +21,7 @@ namespace Application {
 
 		private void Start () {
 			gameBoard.SetupPlayerArray ();
-			logicController = new LogicController (gameBoard);
+			logicController = new LogicController ();
 			getAIQueueMoves ();
 		}
 

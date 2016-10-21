@@ -55,6 +55,5 @@ namespace Application {
 		public void AddPlayerPiece(PlayerPiece piece, int x, int y) {
 			boardPieces [x, y] = piece;
 		}
-		
 	}
 }
