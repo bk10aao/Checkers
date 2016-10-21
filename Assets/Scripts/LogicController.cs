@@ -103,8 +103,7 @@ namespace Application {
 			int i = 0, j = 0;
 			while (j < 8) {
 				while (i < 8) {
-					//TODO look at using canTake instead of these 4 checks.
-					if ((canTakeDownAndRight (i, j, gameBoard) || canTakeDownAndLeft (i, j, gameBoard) || canTakeUpAndRight (i, j, gameBoard) || canTakeUpAndLeft (i, j, gameBoard)) && gameBoard.returnPlayerPiece (i, j).playerNo == playerNumber) {
+					if (canTake(i, j, gameBoard) && gameBoard.returnPlayerPiece (i, j).playerNo == playerNumber) {
 						return true;
 					}
 					i++;

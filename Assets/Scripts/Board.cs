@@ -19,14 +19,14 @@ namespace Application {
 				}
 				else {
 					if (y % 2 == 0 && x % 2 == 0) {
-						piece = new PlayerPiece(player, false);
+						piece = new PlayerPiece(player);
 						boardPieces [x, y] = piece;
 						count++;
 						y++;
 					}
 					else {
 						if (y % 2 == 1 && x % 2 == 1) {
-							piece = new PlayerPiece(player, false);
+							piece = new PlayerPiece(player);
 							boardPieces [x, y] = piece;
 							count++;
 							y++;

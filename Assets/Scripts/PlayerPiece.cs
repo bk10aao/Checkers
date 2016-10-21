@@ -6,9 +6,8 @@ public class PlayerPiece {
 	public int playerNo;
 	public Boolean isKing = false;
 
-	public PlayerPiece (int playerNo, Boolean isKing) {
+	public PlayerPiece (int playerNo) {
 		this.playerNo = playerNo;
-		this.isKing = isKing;
 	}
 
 	public int GetPlayerNumber() {
