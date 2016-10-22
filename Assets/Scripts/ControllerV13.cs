@@ -98,8 +98,8 @@ namespace Application {
 			System.Random rnd = new System.Random();
 			string s = randomMoves[rnd.Next(randomMoves.Count)].ToString();
 			String[] positions = s.Split(',');
-			aiRay.origin = (new Vector3 (Int32.Parse(positions[0]), 1.0f, Int32.Parse(positions[1])));
-			aiRay.direction = (new Vector3 (0 , -1.0f, 0));
+			aiRay.origin = new Vector3 (Int32.Parse(positions[0]), 1.0f, Int32.Parse(positions[1]));
+			aiRay.direction = new Vector3 (0 , -1.0f, 0);
 			Physics.Raycast (aiRay, out hit);
 			performAIMove (Int32.Parse(positions[0]), Int32.Parse(positions[1]));
 		}
@@ -109,8 +109,8 @@ namespace Application {
 			bool hasTaken = false;
 			while (j < 8 && hasTaken == false) {
 				while(i < 8 && hasTaken == false) {
-					rayRay.origin = (new Vector3 (i, 1.0f, j));
-					rayRay.direction = (new Vector3 (0 , -1.0f, 0));
+					rayRay.origin = new Vector3 (i, 1.0f, j);
+					rayRay.direction = new Vector3 (0 , -1.0f, 0);
 					if ((Physics.Raycast (rayRay, out hit) && hit.collider.tag.Contains("Player2"))) {
 						interactionPiece = hit.collider.gameObject;
 						aiPieceStartPosX = (int)hit.transform.position.x;
@@ -157,8 +157,8 @@ namespace Application {
 			Ray aiRay = new Ray();
 			while (j < 8) {
 				while(i < 8) {
-					aiRay.origin = (new Vector3 (i, 1.0f, j));
-					aiRay.direction = (new Vector3 (0 , -1.0f, 0));
+					aiRay.origin = new Vector3 (i, 1.0f, j);
+					aiRay.direction = new Vector3 (0 , -1.0f, 0);
 					if ((Physics.Raycast (aiRay, out hit) && hit.collider.tag.Contains("Player2"))) {
 						int hitPosX = (int)hit.transform.position.x;
 						int hitPosZ = (int)hit.transform.position.z;
@@ -180,8 +180,8 @@ namespace Application {
 			Ray aiRay = new Ray();
 			while (j < 8) {
 				while(i < 8) {
-					aiRay.origin = (new Vector3 (i, 1.0f, j));
-					aiRay.direction = (new Vector3 (0 , -1.0f, 0));
+					aiRay.origin = new Vector3 (i, 1.0f, j);
+					aiRay.direction = new Vector3 (0 , -1.0f, 0);
 					if ((Physics.Raycast (aiRay, out hit) && hit.collider.tag.Contains("Player2"))) {
 						int hitPosX = (int)hit.transform.position.x;
 						int hitPosZ = (int)hit.transform.position.z;
@@ -202,8 +202,8 @@ namespace Application {
 			bool aiQueueMoved = false;
 			while (j < 8 && !aiQueueMoved) {
 				while(i < 8 && !aiQueueMoved) {
-					aiRay.origin = (new Vector3 (i, 1.0f, j));
-					aiRay.direction = (new Vector3 (0 , -1.0f, 0));
+					aiRay.origin = new Vector3 (i, 1.0f, j);
+					aiRay.direction = new Vector3 (0 , -1.0f, 0);
 					if ((Physics.Raycast (aiRay, out hit) && hit.collider.tag.Contains("Player2"))) {
 						int hitPosX = (int)hit.transform.position.x;
 						int hitPosZ = (int)hit.transform.position.z;
@@ -224,8 +224,8 @@ namespace Application {
 			while(hasMoved == false) {
 				String s = moveableAiPieces.Dequeue ().ToString();
 				String[] positions = s.Split(',');
-				aiRay.origin = (new Vector3 (Int32.Parse(positions[0]), 1.0f, Int32.Parse(positions[1])));
-				aiRay.direction = (new Vector3 (0 , -1.0f, 0));
+				aiRay.origin = new Vector3 (Int32.Parse(positions[0]), 1.0f, Int32.Parse(positions[1]));
+				aiRay.direction = new Vector3 (0 , -1.0f, 0);
 				if ((Physics.Raycast (aiRay, out hit) && hit.collider.tag.Contains("Player2"))) {
 					int hitPosX = Int32.Parse(positions[0]);
 					int hitPosZ = Int32.Parse(positions[1]);
@@ -237,7 +237,7 @@ namespace Application {
 		}
 			
 		private void move (int tempx, int tempz) {
-			interactionPiece.transform.position = new Vector3(startPosX, 0.1f, startPosZ);
+			interactionPiece.transform.position = new Vector3 (startPosX, 0.1f, startPosZ);
 			if ((tempx > startPosX) && ((tempz - startPosZ) < 1.5) && ((tempz - startPosZ) > 0) && (tempx - startPosX > 0) && (tempx - startPosX < 1.5) && logic.canMoveDownAndRight (startPosX, startPosZ, gameBoard)) {
 				moveDownAndRight(startPosX, startPosZ, interactionPiece);
 				interactionPiece.transform.position = new Vector3 (tempx, 0.1f, tempz);
@@ -250,8 +250,6 @@ namespace Application {
 			} else if ((tempx < startPosX) && ((tempz - startPosZ) < 0) && ((tempz - startPosZ) > -1.5) && ((tempz - startPosZ) < 0) && (tempx - startPosX < 0) && (tempx - startPosX > -1.5) && logic.canMoveUpAndLeft (startPosX, startPosZ, gameBoard)) {
 				moveUpAndLeft(startPosX, startPosZ, interactionPiece);
 				interactionPiece.transform.position = new Vector3 (tempx, 0.1f, tempz);
-			} else {
-				interactionPiece.transform.position = new Vector3 (startPosX, 0.1f, startPosZ);
 			}
 		}
 
@@ -287,8 +285,6 @@ namespace Application {
 			} else if ((tempx < startPosX) && ((tempz - startPosZ > 1.5) && (tempz - startPosZ < 2.5)) && (tempx - startPosX < -1) && logic.canTakeUpAndRight (startPosX, startPosZ, gameBoard)) {
 				takeUpAndRight (startPosX, startPosZ, interactionPiece);
 				destroyPiece(startPosX, startPosZ, -2, 2);
-			} else {
-				interactionPiece.transform.position = new Vector3 (startPosX, 0.1f, startPosZ);
 			}
 		}
 
