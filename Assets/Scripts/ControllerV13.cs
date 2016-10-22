@@ -45,14 +45,14 @@ namespace Application {
 //						AIMove();
 //					}
 //				}
-
+				//below section implements a random opponent
 				if(logicController.playerHasTakeableMoves(2, gameBoard) && playerTwoPiecesCount > -1 ) {
 					AITake();
 				} else if (playerTwoPiecesCount > -1) {
 					getAIrandomMoves ();
 					AIRandomMove ();
+					randomMoves.Clear ();
 				}
-				//TODO implement random movement AI by using getQueue moves and then selecting random pieces from that array
 			} else {
 				if (Input.GetMouseButtonDown (0)) {
 					if ((Physics.Raycast (ray, out hit)) && hit.collider.tag.Contains("Player" + playerNo.ToString())) {	
@@ -163,7 +163,6 @@ namespace Application {
 		}
 
 		private void getAIQueueMoves() {
-			randomMoves.Clear ();
 			float i = 0, j = 0;
 			Ray aiRay = new Ray();
 			while (j < 8) {
