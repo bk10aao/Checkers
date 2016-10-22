@@ -7,7 +7,7 @@ namespace Application {
 
 	public class ControllerV13 : MonoBehaviour {
 		public Board gameBoard = new Board();
-		private LogicController logicController;
+		private LogicController logic;
 
 		private RaycastHit hit, hit2;
 		private Ray rayRay = new Ray();
@@ -23,15 +23,16 @@ namespace Application {
 
 		private void Start () {
 			gameBoard.SetupPlayerArray ();
-			logicController = new LogicController ();
+			logic = new LogicController ();
 			getAIQueueMoves ();
 		}
 
 		private void Update () {
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 			if (playerNo == 2) {
+				System.Threading.Thread.Sleep(500);
 				//below section is breadth first search
-//				if(logicController.playerHasTakeableMoves(2, gameBoard) && playerTwoPiecesCount > -1 ) {
+				//	if(logic.playerHasTakeableMoves(2, gameBoard) && playerTwoPiecesCount > -1 ) {
 //					AITake();
 //				} else if (playerTwoPiecesCount > -1) {
 //					AIQueueMove();
@@ -39,14 +40,14 @@ namespace Application {
 //				}	 
 				//below section is depth first search
 //				if (playerNo == 2) {
-//					if(logicController.playerHasTakeableMoves(2, gameBoard)) {
+				//	if(logic.playerHasTakeableMoves(2, gameBoard)) {
 //						AITake();
 //					} else {
 //						AIMove();
 //					}
 //				}
 				//below section implements a random opponent
-				if(logicController.playerHasTakeableMoves(2, gameBoard) && playerTwoPiecesCount > -1 ) {
+				if(logic.playerHasTakeableMoves(2, gameBoard) && playerTwoPiecesCount > -1 ) {
 					AITake();
 				} else if (playerTwoPiecesCount > -1) {
 					getAIrandomMoves ();
@@ -72,9 +73,9 @@ namespace Application {
 		}
 
 		void implementPlayerClick () {
-			if (logicController.playerHasTakeableMoves (playerNo, gameBoard) && logicController.canTake (startPosX, startPosZ, gameBoard)) {
+			if (logic.playerHasTakeableMoves (playerNo, gameBoard) && logic.canTake (startPosX, startPosZ, gameBoard)) {
 				interactionPiece.transform.position = new Vector3 (startPosX, 1.0f, startPosZ);
-			} else if (logicController.canMove (startPosX, startPosZ, gameBoard) && !logicController.playerHasTakeableMoves (playerNo, gameBoard)) {
+			} else if (logic.canMove (startPosX, startPosZ, gameBoard) && !logic.playerHasTakeableMoves (playerNo, gameBoard)) {
 				interactionPiece.transform.position = new Vector3 (startPosX, 1.0f, startPosZ);
 			} else {
 				interactionPiece = null;
@@ -82,10 +83,10 @@ namespace Application {
 		}
 
 		void implementPlayerClickRelease (int endPointX, int endPointZ) {
-			if (logicController.canTake (startPosX, startPosZ, gameBoard)) {
+			if (logic.canTake (startPosX, startPosZ, gameBoard)) {
 				take (endPointX, endPointZ);
 				playerTwoPiecesCount--;
-			} else if (logicController.canMove (startPosX, startPosZ, gameBoard)) {
+			} else if (logic.canMove (startPosX, startPosZ, gameBoard)) {
 				move (endPointX, endPointZ);
 			} else {
 				interactionPiece.transform.position = new Vector3 (startPosX, 0.1f, startPosX);
@@ -93,29 +94,18 @@ namespace Application {
 		}
 
 		private void AIRandomMove() {
-			System.Threading.Thread.Sleep(500);
 			Ray aiRay = new Ray();
-			bool hasMoved = false;
 			System.Random rnd = new System.Random();
-			while(hasMoved == false) {
-				string s = randomMoves[rnd.Next(randomMoves.Count)].ToString();
-				String[] positions = s.Split(',');
-				aiRay.origin = (new Vector3 (Int32.Parse(positions[0]), 1.0f, Int32.Parse(positions[1])));
-				aiRay.direction = (new Vector3 (0 , -1.0f, 0));
-				if ((Physics.Raycast (aiRay, out hit) && hit.collider.tag.Contains("Player2"))) {
-					int hitPosX = Int32.Parse(positions[0]);
-					int hitPosZ = Int32.Parse(positions[1]);
-					if (logicController.canMove (hitPosX, hitPosZ, gameBoard)) {
-						performAIMove (hitPosX, hitPosZ);
-						hasMoved = true;
-					}
-				}	
-			}
+			string s = randomMoves[rnd.Next(randomMoves.Count)].ToString();
+			String[] positions = s.Split(',');
+			aiRay.origin = (new Vector3 (Int32.Parse(positions[0]), 1.0f, Int32.Parse(positions[1])));
+			aiRay.direction = (new Vector3 (0 , -1.0f, 0));
+			Physics.Raycast (aiRay, out hit);
+			performAIMove (Int32.Parse(positions[0]), Int32.Parse(positions[1]));
 		}
 
 		private void AITake() {
 			float i = 0, j = 0;
-			System.Threading.Thread.Sleep(500);
 			bool hasTaken = false;
 			while (j < 8 && hasTaken == false) {
 				while(i < 8 && hasTaken == false) {
@@ -125,7 +115,7 @@ namespace Application {
 						interactionPiece = hit.collider.gameObject;
 						aiPieceStartPosX = (int)hit.transform.position.x;
 						aiPieceStartPosZ = (int)hit.transform.position.z;
-						if(logicController.canTake(aiPieceStartPosX, aiPieceStartPosZ, gameBoard)) {
+						if(logic.canTake(aiPieceStartPosX, aiPieceStartPosZ, gameBoard)) {
 							hasTaken = performAITake ();
 						}
 					}
@@ -145,16 +135,16 @@ namespace Application {
 		}
 
 		private bool performAITake () {
-			if (logicController.canTakeUpAndRight (aiPieceStartPosX, aiPieceStartPosZ, gameBoard)) {
+			if (logic.canTakeUpAndRight (aiPieceStartPosX, aiPieceStartPosZ, gameBoard)) {
 				takeUpAndRight (aiPieceStartPosX, aiPieceStartPosZ, interactionPiece);
 				takeWithAiPiece (hit, -2, 2, -1, 1);
-			} else if (logicController.canTakeUpAndLeft (aiPieceStartPosX, aiPieceStartPosZ, gameBoard)) {
+			} else if (logic.canTakeUpAndLeft (aiPieceStartPosX, aiPieceStartPosZ, gameBoard)) {
 				takeUpAndLeft (aiPieceStartPosX, aiPieceStartPosZ, interactionPiece);
 				takeWithAiPiece (hit, -2, -2, -1, -1);
-			} else if (logicController.canTakeDownAndRight (aiPieceStartPosX, aiPieceStartPosZ, gameBoard)) {
+			} else if (logic.canTakeDownAndRight (aiPieceStartPosX, aiPieceStartPosZ, gameBoard)) {
 				takeDownAndRight (aiPieceStartPosX, aiPieceStartPosZ, interactionPiece);
 				takeWithAiPiece (hit, 2, 2, 1, 1);
-			} else if (logicController.canTakeDownAndLeft (aiPieceStartPosX, aiPieceStartPosZ, gameBoard)) {
+			} else if (logic.canTakeDownAndLeft (aiPieceStartPosX, aiPieceStartPosZ, gameBoard)) {
 				takeDownAndLeft (aiPieceStartPosX, aiPieceStartPosZ, interactionPiece);
 				takeWithAiPiece (hit, 2, -2, 1, -1);
 			}
@@ -173,7 +163,7 @@ namespace Application {
 						int hitPosX = (int)hit.transform.position.x;
 						int hitPosZ = (int)hit.transform.position.z;
 						if(!moveableAiPieces.Contains(hitPosX.ToString() + "," + hitPosZ.ToString ())) {
-							if(logicController.canMove(hitPosX, hitPosZ, gameBoard)) {
+							if(logic.canMove(hitPosX, hitPosZ, gameBoard)) {
 								moveableAiPieces.Enqueue(hitPosX.ToString() + "," + hitPosZ.ToString ());
 							}
 						}
@@ -186,7 +176,6 @@ namespace Application {
 		}
 
 		private void getAIrandomMoves() {
-			Debug.Log ("here");
 			float i = 0, j = 0;
 			Ray aiRay = new Ray();
 			while (j < 8) {
@@ -196,7 +185,7 @@ namespace Application {
 					if ((Physics.Raycast (aiRay, out hit) && hit.collider.tag.Contains("Player2"))) {
 						int hitPosX = (int)hit.transform.position.x;
 						int hitPosZ = (int)hit.transform.position.z;
-						if(logicController.canMove(hitPosX, hitPosZ, gameBoard)) {
+						if(logic.canMove(hitPosX, hitPosZ, gameBoard)) {
 							randomMoves.Add (hitPosX.ToString () + "," + hitPosZ.ToString ());
 						}
 					}
@@ -209,7 +198,6 @@ namespace Application {
 
 		private void AIMove() {
 			int i = 0, j = 0;
-			System.Threading.Thread.Sleep(500);
 			Ray aiRay = new Ray();
 			bool aiQueueMoved = false;
 			while (j < 8 && !aiQueueMoved) {
@@ -219,7 +207,7 @@ namespace Application {
 					if ((Physics.Raycast (aiRay, out hit) && hit.collider.tag.Contains("Player2"))) {
 						int hitPosX = (int)hit.transform.position.x;
 						int hitPosZ = (int)hit.transform.position.z;
-						if(logicController.canMove(hitPosX, hitPosZ, gameBoard)) {
+						if(logic.canMove(hitPosX, hitPosZ, gameBoard)) {
 							aiQueueMoved = performAIMove (hitPosX, hitPosZ);
 						}
 					}
@@ -231,7 +219,6 @@ namespace Application {
 		}
 
 		private void AIQueueMove() {
-			System.Threading.Thread.Sleep(500);
 			Ray aiRay = new Ray();
 			bool hasMoved = false;
 			while(hasMoved == false) {
@@ -242,27 +229,25 @@ namespace Application {
 				if ((Physics.Raycast (aiRay, out hit) && hit.collider.tag.Contains("Player2"))) {
 					int hitPosX = Int32.Parse(positions[0]);
 					int hitPosZ = Int32.Parse(positions[1]);
-					if (logicController.canMove (hitPosX, hitPosZ, gameBoard)) {
-						performAIMove (hitPosX, hitPosZ);
-						hasMoved = true;
+					if (logic.canMove (hitPosX, hitPosZ, gameBoard)) {
+						hasMoved = performAIMove (hitPosX, hitPosZ);
 					}
 				}	
 			}
 		}
 			
-		//TODO look at mvoing interactionpiece transformation int the move x and y methods
 		private void move (int tempx, int tempz) {
 			interactionPiece.transform.position = new Vector3(startPosX, 0.1f, startPosZ);
-			if ((tempx > startPosX) && ((tempz - startPosZ) < 1.5) && ((tempz - startPosZ) > 0) && (tempx - startPosX > 0) && (tempx - startPosX < 1.5) && logicController.canMoveDownAndRight (startPosX, startPosZ, gameBoard)) {
+			if ((tempx > startPosX) && ((tempz - startPosZ) < 1.5) && ((tempz - startPosZ) > 0) && (tempx - startPosX > 0) && (tempx - startPosX < 1.5) && logic.canMoveDownAndRight (startPosX, startPosZ, gameBoard)) {
 				moveDownAndRight(startPosX, startPosZ, interactionPiece);
 				interactionPiece.transform.position = new Vector3 (tempx, 0.1f, tempz);
-			} else if ((tempx > startPosX) && ((tempz - startPosZ) < 0) && ((tempz - startPosZ) > -1.5) && (tempx - startPosX > 0) && (tempx - startPosX < 1.5) && logicController.canMoveDownAndLeft (startPosX, startPosZ, gameBoard)) {
+			} else if ((tempx > startPosX) && ((tempz - startPosZ) < 0) && ((tempz - startPosZ) > -1.5) && (tempx - startPosX > 0) && (tempx - startPosX < 1.5) && logic.canMoveDownAndLeft (startPosX, startPosZ, gameBoard)) {
 				moveDownAndLeft(startPosX, startPosZ, interactionPiece);
 				interactionPiece.transform.position = new Vector3 (tempx, 0.1f, tempz);
-			} else if ((tempx < startPosX) && ((tempz - startPosZ) < 1.5) && ((tempz - startPosZ) > 0) && ((tempz - startPosZ) < 1.5) && (tempx - startPosX < 0) && (tempx - startPosX > -1.5) && logicController.canMoveUpAndRight (startPosX, startPosZ, gameBoard)) {
+			} else if ((tempx < startPosX) && ((tempz - startPosZ) < 1.5) && ((tempz - startPosZ) > 0) && ((tempz - startPosZ) < 1.5) && (tempx - startPosX < 0) && (tempx - startPosX > -1.5) && logic.canMoveUpAndRight (startPosX, startPosZ, gameBoard)) {
 				moveUpAndRight(startPosX, startPosZ, interactionPiece);
 				interactionPiece.transform.position = new Vector3 (tempx, 0.1f, tempz);
-			} else if ((tempx < startPosX) && ((tempz - startPosZ) < 0) && ((tempz - startPosZ) > -1.5) && ((tempz - startPosZ) < 0) && (tempx - startPosX < 0) && (tempx - startPosX > -1.5) && logicController.canMoveUpAndLeft (startPosX, startPosZ, gameBoard)) {
+			} else if ((tempx < startPosX) && ((tempz - startPosZ) < 0) && ((tempz - startPosZ) > -1.5) && ((tempz - startPosZ) < 0) && (tempx - startPosX < 0) && (tempx - startPosX > -1.5) && logic.canMoveUpAndLeft (startPosX, startPosZ, gameBoard)) {
 				moveUpAndLeft(startPosX, startPosZ, interactionPiece);
 				interactionPiece.transform.position = new Vector3 (tempx, 0.1f, tempz);
 			} else {
@@ -271,16 +256,16 @@ namespace Application {
 		}
 
 		bool performAIMove (int hitPosX, int hitPosZ) {
-			if (logicController.canMoveUpAndRight (hitPosX, hitPosZ, gameBoard)) {
+			if (logic.canMoveUpAndRight (hitPosX, hitPosZ, gameBoard)) {
 				moveUpAndRight (hitPosX, hitPosZ, hit.collider.gameObject);
 				hit.collider.gameObject.transform.position = new Vector3 (hitPosX - 1, 0.1f, hitPosZ + 1);
-			} else if (logicController.canMoveUpAndLeft (hitPosX, hitPosZ, gameBoard)) {
+			} else if (logic.canMoveUpAndLeft (hitPosX, hitPosZ, gameBoard)) {
 				moveUpAndLeft (hitPosX, hitPosZ, hit.collider.gameObject);
 				hit.collider.gameObject.transform.position = new Vector3 (hitPosX - 1, 0.1f, hitPosZ - 1);
-			} else if (logicController.canMoveDownAndRight (hitPosX, hitPosZ, gameBoard)) {
+			} else if (logic.canMoveDownAndRight (hitPosX, hitPosZ, gameBoard)) {
 				moveDownAndRight (hitPosX, hitPosZ, hit.collider.gameObject);
 				hit.collider.gameObject.transform.position = new Vector3 (hitPosX + 1, 0.1f, hitPosZ + 1);
-			} else if (logicController.canMoveDownAndLeft (hitPosX, hitPosZ, gameBoard)) {
+			} else if (logic.canMoveDownAndLeft (hitPosX, hitPosZ, gameBoard)) {
 				moveDownAndLeft (hitPosX, hitPosZ, hit.collider.gameObject);
 				hit.collider.gameObject.transform.position = new Vector3 (hitPosX + 1, 0.1f, hitPosZ - 1);
 			} 
@@ -290,16 +275,16 @@ namespace Application {
 
 		private void take (float tempx, float tempz) {
 			interactionPiece.transform.position = new Vector3 (startPosX, 0.1f, startPosZ);
-			if ((tempx > startPosX) && ((tempz - startPosZ > 1.5) && (tempz - startPosZ < 2.5)) && logicController.canTakeDownAndRight (startPosX, startPosZ, gameBoard)) {
+			if ((tempx > startPosX) && ((tempz - startPosZ > 1.5) && (tempz - startPosZ < 2.5)) && logic.canTakeDownAndRight (startPosX, startPosZ, gameBoard)) {
 				takeDownAndRight (startPosX, startPosZ, interactionPiece);
 				destroyPiece(startPosX, startPosZ, 2, 2);
-			} else if ((tempx > startPosX) && (tempz - startPosZ < -1.5) && ((tempz - startPosZ) > -2.5) && logicController.canTakeDownAndLeft (startPosX, startPosZ, gameBoard)) {
+			} else if ((tempx > startPosX) && (tempz - startPosZ < -1.5) && ((tempz - startPosZ) > -2.5) && logic.canTakeDownAndLeft (startPosX, startPosZ, gameBoard)) {
 				takeDownAndLeft (startPosX, startPosZ, interactionPiece);
 				destroyPiece(startPosX, startPosZ, 2, -2);
-			} else if ((tempx < startPosX) && ((tempz - startPosZ < -1.5) && (tempz - startPosZ > -2.5)) && (tempx - startPosX < -1) && logicController.canTakeUpAndLeft (startPosX, startPosZ, gameBoard)) {
+			} else if ((tempx < startPosX) && ((tempz - startPosZ < -1.5) && (tempz - startPosZ > -2.5)) && (tempx - startPosX < -1) && logic.canTakeUpAndLeft (startPosX, startPosZ, gameBoard)) {
 				takeUpAndLeft (startPosX, startPosZ, interactionPiece);
 				destroyPiece(startPosX, startPosZ, -2, -2);
-			} else if ((tempx < startPosX) && ((tempz - startPosZ > 1.5) && (tempz - startPosZ < 2.5)) && (tempx - startPosX < -1) && logicController.canTakeUpAndRight (startPosX, startPosZ, gameBoard)) {
+			} else if ((tempx < startPosX) && ((tempz - startPosZ > 1.5) && (tempz - startPosZ < 2.5)) && (tempx - startPosX < -1) && logic.canTakeUpAndRight (startPosX, startPosZ, gameBoard)) {
 				takeUpAndRight (startPosX, startPosZ, interactionPiece);
 				destroyPiece(startPosX, startPosZ, -2, 2);
 			} else {
@@ -314,9 +299,7 @@ namespace Application {
 			if (Physics.Raycast (rayRay, out hit)) {
 				Destroy (hit.transform.gameObject);
 			}
-			if ((!logicController.canTake (aiStartPosX + directionX, aiStartPosZ + directionZ, gameBoard) && pieceChangedToKing == false)
-				&& (((aiStartPosX + directionX) > -1) && ((aiStartPosX + directionX) < 8) 
-					&& ((aiStartPosZ + directionZ) > -1) && ((aiStartPosZ + directionZ) < 8))) {
+			if (!logic.canTake (aiStartPosX + directionX, aiStartPosZ + directionZ, gameBoard) && pieceChangedToKing == false) {
 				changePlayer ();
 			}
 		}
@@ -341,31 +324,30 @@ namespace Application {
 			gameBoard.removePiece (x + enemyXPos, y + enemyYPos);
 			gameBoard.AddPlayerPiece (piece, x + emptyXPos, y + emptyYPos);
 			if (piece.isKing == false && (x + emptyXPos == 0 || x + emptyXPos == 7)) {
-				piece.isKing = true;
 				transformPieceToKing(piece, playerPiece);
 			}
 		}
 
 		private void takeUpAndRight (int x, int y, GameObject playerPiece) {
-			if (logicController.canTakeUpAndRight (x, y, gameBoard)) {
+			if (logic.canTakeUpAndRight (x, y, gameBoard)) {
 				updateBoardOnTake (x, y, -1, 1, -2, 2, playerPiece);
 			}
 		}
 
 		private void takeUpAndLeft (int x, int y, GameObject playerPiece) {
-			if (logicController.canTakeUpAndLeft (x, y, gameBoard)) {
+			if (logic.canTakeUpAndLeft (x, y, gameBoard)) {
 				updateBoardOnTake (x, y, -1, -1, -2, -2, playerPiece);
 			}
 		}
 
 		private void takeDownAndLeft(int x, int y, GameObject playerPiece) {
-			if (logicController.canTakeDownAndLeft (x, y, gameBoard)) {
+			if (logic.canTakeDownAndLeft (x, y, gameBoard)) {
 				updateBoardOnTake (x, y, 1, -1, 2, -2, playerPiece);
 			}
 		}
 
 		private void takeDownAndRight (int x, int y, GameObject playerPiece) {
-			if (logicController.canTakeDownAndRight (x, y, gameBoard)) {
+			if (logic.canTakeDownAndRight (x, y, gameBoard)) {
 				updateBoardOnTake (x, y, 1, 1, 2, 2, playerPiece);
 			}
 		}
@@ -377,7 +359,6 @@ namespace Application {
 				gameBoard.removePiece (x, y);
 				gameBoard.AddPlayerPiece (piece, x + moveToPosX , y + moveToPosY);
 				if (piece.isKing == false && (x + moveToPosX == 0 || x + moveToPosX == 7)) {
-					piece.isKing = true;
 					transformPieceToKing (piece, playerPiece);
 				} else {
 					changePlayer();
@@ -386,28 +367,28 @@ namespace Application {
 		}
 
 		private void moveDownAndRight (int x, int y, GameObject playerPiece) {
-			if (logicController.canMoveDownAndRight (x, y, gameBoard)) {
+			if (logic.canMoveDownAndRight (x, y, gameBoard)) {
 				PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
 				updateGameBoardOnMove(x, y, 1, 1, piece.playerNo, playerPiece, piece);
 			}
 		}
 
 		private void moveDownAndLeft (int x, int y, GameObject playerPiece) {
-			if (logicController.canMoveDownAndLeft (x, y, gameBoard)) {
+			if (logic.canMoveDownAndLeft (x, y, gameBoard)) {
 				PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
 				updateGameBoardOnMove(x, y, 1, -1, piece.playerNo, playerPiece, piece);
 			}
 		}
 
 		private void moveUpAndRight (int x, int y, GameObject playerPiece) {
-			if (logicController.canMoveUpAndRight (x, y, gameBoard)) {
+			if (logic.canMoveUpAndRight (x, y, gameBoard)) {
 				PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
 				updateGameBoardOnMove (x, y, -1, 1, piece.playerNo, playerPiece, piece);
 			}
 		}
 
 		private void moveUpAndLeft (int x, int y, GameObject playerPiece) {
-			if (logicController.canMoveUpAndLeft (x, y, gameBoard)) {
+			if (logic.canMoveUpAndLeft (x, y, gameBoard)) {
 				PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
 				updateGameBoardOnMove(x, y, -1, -1, piece.playerNo, playerPiece, piece);
 			}
