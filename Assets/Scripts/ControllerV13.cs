@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System;
+using UnityEngine;
 
 namespace Application {
 
@@ -18,6 +19,7 @@ namespace Application {
 		private Boolean pieceChangedToKing = false;
 
 		private Queue<String> moveableAiPieces = new Queue<String>();
+		private ArrayList randomMoves = new ArrayList();
 
 		private void Start () {
 			gameBoard.SetupPlayerArray ();
@@ -36,13 +38,21 @@ namespace Application {
 //					getAIQueueMoves();
 //				}	 
 				//below section is depth first search
-				if (playerNo == 2) {
-					if(logicController.playerHasTakeableMoves(2, gameBoard)) {
-						AITake();
-					} else {
-						AIMove();
-					}
+//				if (playerNo == 2) {
+//					if(logicController.playerHasTakeableMoves(2, gameBoard)) {
+//						AITake();
+//					} else {
+//						AIMove();
+//					}
+//				}
+
+				if(logicController.playerHasTakeableMoves(2, gameBoard) && playerTwoPiecesCount > -1 ) {
+					AITake();
+				} else if (playerTwoPiecesCount > -1) {
+					getAIrandomMoves ();
+					AIRandomMove ();
 				}
+				//TODO implement random movement AI by using getQueue moves and then selecting random pieces from that array
 			} else {
 				if (Input.GetMouseButtonDown (0)) {
 					if ((Physics.Raycast (ray, out hit)) && hit.collider.tag.Contains("Player" + playerNo.ToString())) {	
@@ -79,6 +89,27 @@ namespace Application {
 				move (endPointX, endPointZ);
 			} else {
 				interactionPiece.transform.position = new Vector3 (startPosX, 0.1f, startPosX);
+			}
+		}
+
+		private void AIRandomMove() {
+			System.Threading.Thread.Sleep(500);
+			Ray aiRay = new Ray();
+			bool hasMoved = false;
+			System.Random rnd = new System.Random();
+			while(hasMoved == false) {
+				string s = randomMoves[rnd.Next(randomMoves.Count)].ToString();
+				String[] positions = s.Split(',');
+				aiRay.origin = (new Vector3 (Int32.Parse(positions[0]), 1.0f, Int32.Parse(positions[1])));
+				aiRay.direction = (new Vector3 (0 , -1.0f, 0));
+				if ((Physics.Raycast (aiRay, out hit) && hit.collider.tag.Contains("Player2"))) {
+					int hitPosX = Int32.Parse(positions[0]);
+					int hitPosZ = Int32.Parse(positions[1]);
+					if (logicController.canMove (hitPosX, hitPosZ, gameBoard)) {
+						performAIMove (hitPosX, hitPosZ);
+						hasMoved = true;
+					}
+				}	
 			}
 		}
 
@@ -132,6 +163,7 @@ namespace Application {
 		}
 
 		private void getAIQueueMoves() {
+			randomMoves.Clear ();
 			float i = 0, j = 0;
 			Ray aiRay = new Ray();
 			while (j < 8) {
@@ -145,6 +177,28 @@ namespace Application {
 							if(logicController.canMove(hitPosX, hitPosZ, gameBoard)) {
 								moveableAiPieces.Enqueue(hitPosX.ToString() + "," + hitPosZ.ToString ());
 							}
+						}
+					}
+					i++;
+				}
+				j++;
+				i = 0;
+			}
+		}
+
+		private void getAIrandomMoves() {
+			Debug.Log ("here");
+			float i = 0, j = 0;
+			Ray aiRay = new Ray();
+			while (j < 8) {
+				while(i < 8) {
+					aiRay.origin = (new Vector3 (i, 1.0f, j));
+					aiRay.direction = (new Vector3 (0 , -1.0f, 0));
+					if ((Physics.Raycast (aiRay, out hit) && hit.collider.tag.Contains("Player2"))) {
+						int hitPosX = (int)hit.transform.position.x;
+						int hitPosZ = (int)hit.transform.position.z;
+						if(logicController.canMove(hitPosX, hitPosZ, gameBoard)) {
+							randomMoves.Add (hitPosX.ToString () + "," + hitPosZ.ToString ());
 						}
 					}
 					i++;
@@ -196,7 +250,7 @@ namespace Application {
 				}	
 			}
 		}
-
+			
 		//TODO look at mvoing interactionpiece transformation int the move x and y methods
 		private void move (int tempx, int tempz) {
 			interactionPiece.transform.position = new Vector3(startPosX, 0.1f, startPosZ);
