@@ -240,17 +240,14 @@ namespace Application {
 			interactionPiece.transform.position = new Vector3 (startPosX, 0.1f, startPosZ);
 			if ((tempx > startPosX) && ((tempz - startPosZ) < 1.5) && ((tempz - startPosZ) > 0) && (tempx - startPosX > 0) && (tempx - startPosX < 1.5) && logic.canMoveDownAndRight (startPosX, startPosZ, gameBoard)) {
 				moveDownAndRight(startPosX, startPosZ, interactionPiece);
-				interactionPiece.transform.position = new Vector3 (tempx, 0.1f, tempz);
 			} else if ((tempx > startPosX) && ((tempz - startPosZ) < 0) && ((tempz - startPosZ) > -1.5) && (tempx - startPosX > 0) && (tempx - startPosX < 1.5) && logic.canMoveDownAndLeft (startPosX, startPosZ, gameBoard)) {
 				moveDownAndLeft(startPosX, startPosZ, interactionPiece);
-				interactionPiece.transform.position = new Vector3 (tempx, 0.1f, tempz);
 			} else if ((tempx < startPosX) && ((tempz - startPosZ) < 1.5) && ((tempz - startPosZ) > 0) && ((tempz - startPosZ) < 1.5) && (tempx - startPosX < 0) && (tempx - startPosX > -1.5) && logic.canMoveUpAndRight (startPosX, startPosZ, gameBoard)) {
 				moveUpAndRight(startPosX, startPosZ, interactionPiece);
-				interactionPiece.transform.position = new Vector3 (tempx, 0.1f, tempz);
 			} else if ((tempx < startPosX) && ((tempz - startPosZ) < 0) && ((tempz - startPosZ) > -1.5) && ((tempz - startPosZ) < 0) && (tempx - startPosX < 0) && (tempx - startPosX > -1.5) && logic.canMoveUpAndLeft (startPosX, startPosZ, gameBoard)) {
 				moveUpAndLeft(startPosX, startPosZ, interactionPiece);
-				interactionPiece.transform.position = new Vector3 (tempx, 0.1f, tempz);
 			}
+			interactionPiece.transform.position = new Vector3 (tempx, 0.1f, tempz);
 		}
 
 		bool performAIMove (int hitPosX, int hitPosZ) {
@@ -313,7 +310,7 @@ namespace Application {
 		}
 
 		//x values are supplied as either -1 1, -2 or 2. Positive values will move the piece down the board visually negative will move up 
-		//z values are supplied as either -1 1, -2 or 2. Positive values will move the piece rightvisually negative will move left 
+		//z values are supplied as either -1 1, -2 or 2. Positive values will move the piece right visually negative will move left 
 		private void updateBoardOnTake(int x, int y, int enemyXPos, int enemyYPos, int emptyXPos, int emptyYPos, GameObject playerPiece) {
 			PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
 			gameBoard.removePiece (x, y);
