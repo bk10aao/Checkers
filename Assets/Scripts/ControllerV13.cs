@@ -31,29 +31,10 @@ namespace Application {
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 			if (playerNo == 2) {
 				System.Threading.Thread.Sleep(500);
-				//below section is breadth first search
-				//	if(logic.playerHasTakeableMoves(2, gameBoard) && playerTwoPiecesCount > -1 ) {
-//					AITake();
-//				} else if (playerTwoPiecesCount > -1) {
-//					AIQueueMove();
-//					getAIQueueMoves();
-//				}	 
-				//below section is depth first search
-//				if (playerNo == 2) {
-				//	if(logic.playerHasTakeableMoves(2, gameBoard)) {
-//						AITake();
-//					} else {
-//						AIMove();
-//					}
-//				}
-				//below section implements a random opponent
-				if(logic.playerHasTakeableMoves(2, gameBoard) && playerTwoPiecesCount > -1 ) {
-					AITake();
-				} else if (playerTwoPiecesCount > -1) {
-					getAIrandomMoves ();
-					AIRandomMove ();
-					randomMoves.Clear ();
-				}
+				//comment/uncomment sections based on opponent type
+				breadthFirstSearch ();	 
+				//depthFirstSearch ();
+				//randomOpponent ();
 			} else {
 				if (Input.GetMouseButtonDown (0)) {
 					if ((Physics.Raycast (ray, out hit)) && hit.collider.tag.Contains("Player" + playerNo.ToString())) {	
@@ -123,6 +104,33 @@ namespace Application {
 				}
 				j++;
 				i = 0;
+			}
+		}
+
+		void breadthFirstSearch () {
+			if (logic.playerHasTakeableMoves (2, gameBoard) && playerTwoPiecesCount > -1) {
+				AITake ();
+			} else if (playerTwoPiecesCount > -1) {
+				AIQueueMove ();
+				getAIQueueMoves ();
+			}
+		}
+
+		void depthFirstSearch () {
+			if (logic.playerHasTakeableMoves (2, gameBoard)) {
+				AITake ();
+			} else {
+				AIMove ();
+			}
+		}
+
+		void randomOpponent () {
+			if (logic.playerHasTakeableMoves (2, gameBoard) && playerTwoPiecesCount > -1) {
+				AITake ();
+			} else if (playerTwoPiecesCount > -1) {
+				getAIrandomMoves ();
+				AIRandomMove ();
+				randomMoves.Clear ();
 			}
 		}
 
