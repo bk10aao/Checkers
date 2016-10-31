@@ -9,53 +9,16 @@ This was developed using version unity-5.3.5.
 
 ##Changing opponent algorithm
 
-To switch between breadth-first and depth-first algorithms the following changes must be made to the ControllerV13 file inside the update method:
+To switch between breadth-first, depth-first algorithms or a random opponent comment/uncomment the relevant code within the ```Update ()``` method the following changes must be made to the ControllerV13 file inside the update method.
 
-### Original code
-
-``` 
+```
 if (playerNo == 2) {
-
-				//below section is breadth first search
-				/**if(logicController.playerHasTakeableMoves(2, gameBoard) && playerTwoPiecesCount > -1 ) {
-					AITake();
-				} else if (playerTwoPiecesCount > -1) {
-					AIQueueMove();
-					getAIQueueMoves();
-				}**/	 
-
-				//below section is depth first search
-				if (playerNo == 2) {
-					if(logicController.playerHasTakeableMoves(2, gameBoard)) {
-						AITake();
-					} else {
-						AIMove();
-					}
-				}
-			}
+	System.Threading.Thread.Sleep(500);
+	//comment/uncomment sections based on opponent type
+	breadthFirstSearch ();	 
+	//depthFirstSearch ();
+	//randomOpponent ();
+}
 ```
 
-### Breadth-first search:
-
-``` 
-	if (playerNo == 2) {
-		if(logicController.playerHasTakeableMoves(2, gameBoard) && playerTwoPiecesCount > -1 ) {
-			AITake();
-		} else if (playerTwoPiecesCount > -1) {
-			AIQueueMove();
-			getAIQueueMoves();
-		}
-	} 
-```
-
-###Depth-first search:
-
-``` 
-	if (playerNo == 2) {
-		if(logicController.playerHasTakeableMoves(2, gameBoard)) {
-			AITake();
-		} else {
-			AIMove();
-		}
-	}
-``` 
+### Enjoy!!!
