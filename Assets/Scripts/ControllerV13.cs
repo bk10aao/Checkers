@@ -59,6 +59,7 @@ namespace Application {
 			} else if (logic.canMove (startPosX, startPosZ, gameBoard) && !logic.playerHasTakeableMoves (playerNo, gameBoard)) {
 				interactionPiece.transform.position = new Vector3 (startPosX, 1.0f, startPosZ);
 			} else {
+				interactionPiece.transform.position = new Vector3 (startPosX, 0.1f, startPosZ);
 				interactionPiece = null;
 			}
 		}
@@ -259,7 +260,7 @@ namespace Application {
 				moveUpAndLeft(startPosX, startPosZ, interactionPiece);
 				interactionPiece.transform.position = new Vector3 (tempx, 0.1f, tempz);
 			} else {
-				interactionPiece.transform.position = new Vector3 (startPosX, 0.1f, startPosX);
+				interactionPiece.transform.position = new Vector3 (startPosX, 0.1f, startPosZ);
 			}
 		}
 
