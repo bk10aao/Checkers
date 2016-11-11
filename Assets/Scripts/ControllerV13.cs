@@ -21,7 +21,6 @@ namespace Application {
 		private Queue<String> moveableAiPieces = new Queue<String>();
 		private ArrayList randomMoves = new ArrayList();
 
-		//TODO: fix issue where piece can transform to the wrong element when dropped
 		private void Start () {
 			gameBoard.SetupPlayerArray ();
 			logic = new LogicController ();
