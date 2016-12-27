@@ -13,8 +13,9 @@ namespace Application {
 		private Ray rayRay = new Ray();
 
 		private GameObject interactionPiece;
+		GUIText aiText;
 
-		private int startPosX, startPosZ, playerNo = 1, aiPieceStartPosX, aiPieceStartPosZ, playerTwoPiecesCount = 11;
+		private int startPosX, startPosZ, playerNo = 1, aiPieceStartPosX, aiPieceStartPosZ, playerTwoPiecesCount = 11, aiType = 0;
 
 		private Boolean pieceChangedToKing = false;
 
@@ -25,30 +26,51 @@ namespace Application {
 			gameBoard.SetupPlayerArray ();
 			logic = new LogicController ();
 			getAIQueueMoves ();
+			aiText  = GameObject.FindWithTag("aiText").GetComponent<GUIText>() as GUIText;
 		}
 
 		private void Update () {
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-			if (playerNo == 2) {
-				System.Threading.Thread.Sleep(500);
-				//comment/uncomment sections based on opponent type
-				//breadthFirstSearch ();	 
-				//depthFirstSearch ();
-				randomOpponent ();
+			if (aiType == 0) {
+				if (Input.GetKeyDown ("1")) {
+					aiType = 1;
+					aiText.enabled = false;
+				}
+				if (Input.GetKeyDown ("2")) {
+					aiType = 2;					
+					aiText.enabled = false;
+				}
+				if (Input.GetKeyDown ("3")) {
+					aiType = 3;
+					aiText.enabled = false;
+				}
 			} else {
-				if (Input.GetMouseButtonDown (0)) {
-					if ((Physics.Raycast (ray, out hit)) && hit.collider.tag.Contains("Player" + playerNo.ToString())) {	
-						startPosX = (int)hit.collider.transform.localPosition.x;
-						startPosZ = (int)hit.collider.transform.localPosition.z;
-						interactionPiece = hit.collider.gameObject;
-						implementPlayerClick ();
-					} else {
-						interactionPiece = null;
+				if (playerNo == 2) {
+					System.Threading.Thread.Sleep (500);
+					if (aiType == 1) {
+						breadthFirstSearch ();
+					} 
+					if (aiType == 2) {
+						depthFirstSearch ();
+					} 
+					if (aiType == 3) {
+						randomOpponent ();
 					}
-				} else if (Input.GetMouseButtonUp (0) && interactionPiece != null && Physics.Raycast (ray, out hit)) {
-					int endPointX = (int)hit.collider.transform.localPosition.x;
-					int endPointZ = (int)hit.collider.transform.localPosition.z;
-					implementPlayerClickRelease (endPointX, endPointZ);
+				} else {
+					if (Input.GetMouseButtonDown (0)) {
+						if ((Physics.Raycast (ray, out hit)) && hit.collider.tag.Contains ("Player" + playerNo.ToString ())) {	
+							startPosX = (int)hit.collider.transform.localPosition.x;
+							startPosZ = (int)hit.collider.transform.localPosition.z;
+							interactionPiece = hit.collider.gameObject;
+							implementPlayerClick ();
+						} else {
+							interactionPiece = null;
+						}
+					} else if (Input.GetMouseButtonUp (0) && interactionPiece != null && Physics.Raycast (ray, out hit)) {
+						int endPointX = (int)hit.collider.transform.localPosition.x;
+						int endPointZ = (int)hit.collider.transform.localPosition.z;
+						implementPlayerClickRelease (endPointX, endPointZ);
+					}
 				}
 			}
 		}
