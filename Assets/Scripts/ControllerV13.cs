@@ -15,10 +15,14 @@ namespace Application {
 		private GameObject interactionPiece;
 		GUIText aiText;
 
+<<<<<<< HEAD
 		private int startPosX, startPosZ, playerNo = 1, 
 					aiPieceStartPosX, aiPieceStartPosZ, 
 					playerOnePieceCount = 12, playerTwoPieceCount = 12,
 					aiType = 0;
+=======
+		private int startPosX, startPosZ, playerNo = 1, aiPieceStartPosX, aiPieceStartPosZ, playerTwoPiecesCount = 11, aiType = 0;
+>>>>>>> 2033ff9bb9f5ff52fe191e26625b1a3285687575
 
 		private Boolean pieceChangedToKing = false;
 
@@ -93,6 +97,10 @@ namespace Application {
 		void implementPlayerClickRelease (int endPointX, int endPointZ) {
 			if (logic.canTake (startPosX, startPosZ, gameBoard)) {
 				take (endPointX, endPointZ);
+<<<<<<< HEAD
+=======
+				playerTwoPiecesCount--;
+>>>>>>> 2033ff9bb9f5ff52fe191e26625b1a3285687575
 			} else if (logic.canMove (startPosX, startPosZ, gameBoard)) {
 				move (endPointX, endPointZ);
 			} else {
@@ -131,6 +139,7 @@ namespace Application {
 				j++;
 				i = 0;
 			}
+<<<<<<< HEAD
 			playerOnePieceCount--;
 			if (playerOnePieceCount == 0) {
 				aiText.text = "AI Opponent won!!";
@@ -142,6 +151,14 @@ namespace Application {
 			if (logic.playerHasTakeableMoves (2, gameBoard) && playerTwoPieceCount > -1) {
 				AITake ();
 			} else if (playerTwoPieceCount > -1) {
+=======
+		}
+
+		void breadthFirstSearch () {
+			if (logic.playerHasTakeableMoves (2, gameBoard) && playerTwoPiecesCount > -1) {
+				AITake ();
+			} else if (playerTwoPiecesCount > -1) {
+>>>>>>> 2033ff9bb9f5ff52fe191e26625b1a3285687575
 				AIQueueMove ();
 				getAIQueueMoves ();
 			}
@@ -156,9 +173,15 @@ namespace Application {
 		}
 
 		void randomOpponent () {
+<<<<<<< HEAD
 			if (logic.playerHasTakeableMoves (2, gameBoard) && playerTwoPieceCount > -1) {
 				AITake ();
 			} else if (playerTwoPieceCount > -1) {
+=======
+			if (logic.playerHasTakeableMoves (2, gameBoard) && playerTwoPiecesCount > -1) {
+				AITake ();
+			} else if (playerTwoPiecesCount > -1) {
+>>>>>>> 2033ff9bb9f5ff52fe191e26625b1a3285687575
 				getAIrandomMoves ();
 				AIRandomMove ();
 				randomMoves.Clear ();
@@ -317,6 +340,7 @@ namespace Application {
 			if ((tempx > startPosX) && ((tempz - startPosZ > 1.5) && (tempz - startPosZ < 2.5)) && logic.canTakeDownAndRight (startPosX, startPosZ, gameBoard)) {
 				takeDownAndRight (startPosX, startPosZ, interactionPiece);
 				destroyPiece(startPosX, startPosZ, 2, 2);
+<<<<<<< HEAD
 				playerTwoPieceCount--;
 			} else if ((tempx > startPosX) && (tempz - startPosZ < -1.5) && ((tempz - startPosZ) > -2.5) && logic.canTakeDownAndLeft (startPosX, startPosZ, gameBoard)) {
 				takeDownAndLeft (startPosX, startPosZ, interactionPiece);
@@ -330,6 +354,17 @@ namespace Application {
 				takeUpAndRight (startPosX, startPosZ, interactionPiece);
 				destroyPiece(startPosX, startPosZ, -2, 2);
 				playerTwoPieceCount--;
+=======
+			} else if ((tempx > startPosX) && (tempz - startPosZ < -1.5) && ((tempz - startPosZ) > -2.5) && logic.canTakeDownAndLeft (startPosX, startPosZ, gameBoard)) {
+				takeDownAndLeft (startPosX, startPosZ, interactionPiece);
+				destroyPiece(startPosX, startPosZ, 2, -2);
+			} else if ((tempx < startPosX) && ((tempz - startPosZ < -1.5) && (tempz - startPosZ > -2.5)) && (tempx - startPosX < -1) && logic.canTakeUpAndLeft (startPosX, startPosZ, gameBoard)) {
+				takeUpAndLeft (startPosX, startPosZ, interactionPiece);
+				destroyPiece(startPosX, startPosZ, -2, -2);
+			} else if ((tempx < startPosX) && ((tempz - startPosZ > 1.5) && (tempz - startPosZ < 2.5)) && (tempx - startPosX < -1) && logic.canTakeUpAndRight (startPosX, startPosZ, gameBoard)) {
+				takeUpAndRight (startPosX, startPosZ, interactionPiece);
+				destroyPiece(startPosX, startPosZ, -2, 2);
+>>>>>>> 2033ff9bb9f5ff52fe191e26625b1a3285687575
 			}
 			if (playerTwoPieceCount == 0) {
 				aiText.text = "Player One Won!!";
