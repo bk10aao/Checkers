@@ -329,10 +329,6 @@ namespace Application {
 				takeUpAndRight (startPosX, startPosZ, interactionPiece);
 				destroyPiece(startPosX, startPosZ, -2, 2);
 				playerTwoPieceCount--;
-			} else if ((tempx > startPosX) && (tempz - startPosZ < -1.5) && ((tempz - startPosZ) > -2.5) && logic.canTakeDownAndLeft (startPosX, startPosZ, gameBoard)) {
-				takeDownAndLeft (startPosX, startPosZ, interactionPiece);
-				destroyPiece(startPosX, startPosZ, 2, -2);
-				playerTwoPieceCount--;
 			}
 			if (playerTwoPieceCount == 0) {
 				aiText.text = "Player One Won!!";
