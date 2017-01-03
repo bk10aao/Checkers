@@ -49,7 +49,7 @@ namespace Application {
 					aiText.enabled = false;
 				}
 			} else {
-				if (playerNo == 2 && playerTwoPieceCount !=0) {
+				if (playerNo == 2 && playerTwoPieceCount > 0) {
 					System.Threading.Thread.Sleep (500);
 					if (aiType == 1) {
 						breadthFirstSearch ();
