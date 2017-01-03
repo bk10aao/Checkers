@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Application {
-
 	public class ControllerV13 : MonoBehaviour {
 		public Board gameBoard = new Board();
 
@@ -51,15 +50,7 @@ namespace Application {
 			} else {
 				if (playerNo == 2 && playerTwoPieceCount > 0) {
 					System.Threading.Thread.Sleep (500);
-					if (aiType == 1) {
-						breadthFirstSearch ();
-					} 
-					if (aiType == 2) {
-						depthFirstSearch ();
-					} 
-					if (aiType == 3) {
-						randomOpponent ();
-					}
+					aiSearchImplementation ();
 				} else {
 					if (Input.GetMouseButtonDown (0)) {
 						if ((Physics.Raycast (ray, out hit)) && hit.collider.tag.Contains ("Player" + playerNo.ToString ())) {	
@@ -101,6 +92,7 @@ namespace Application {
 		}
 
 		private void AIRandomMove() {
+			getAIrandomMoves ();
 			Ray aiRay = new Ray();
 			System.Random rnd = new System.Random();
 			string s = randomMoves[rnd.Next(randomMoves.Count)].ToString();
@@ -109,6 +101,7 @@ namespace Application {
 			aiRay.direction = new Vector3 (0 , -1.0f, 0);
 			Physics.Raycast (aiRay, out hit);
 			performAIMove (Int32.Parse(positions[0]), Int32.Parse(positions[1]));
+			randomMoves.Clear ();
 		}
 
 		private void AITake() {
@@ -123,7 +116,8 @@ namespace Application {
 						aiPieceStartPosX = (int)hit.transform.position.x;
 						aiPieceStartPosZ = (int)hit.transform.position.z;
 						if(logic.canTake(aiPieceStartPosX, aiPieceStartPosZ, gameBoard)) {
-							hasTaken = performAITake ();
+							performAITake ();
+							hasTaken = true;
 						}
 					}
 					i++;
@@ -138,29 +132,27 @@ namespace Application {
 			}
 		}
 
-		void breadthFirstSearch () {
-			if (logic.playerHasTakeableMoves (2, gameBoard) && playerTwoPieceCount > -1) {
-				AITake ();
-			}
-		}
-
-		void depthFirstSearch () {
-			if (logic.playerHasTakeableMoves (2, gameBoard)) {
-				AITake ();
+		void aiSearchImplementation() {
+			if(logic.playerHasTakeableMoves (2, gameBoard)) {
+				AITake(); 
 			} else {
-				AIMove ();
-			}
-		}
-
-		void randomOpponent () {
-			if (logic.playerHasTakeableMoves (2, gameBoard) && playerTwoPieceCount > -1) {
-				AITake ();
-			} else if (logic.playerHasTakeableMoves (2, gameBoard) && playerTwoPieceCount > -1) {
-				AITake ();
-			} else if (playerTwoPieceCount > -1) {
-				getAIrandomMoves ();
-				AIRandomMove ();
-				randomMoves.Clear ();
+				switch (aiType) {
+					case 1: {
+						AIQueueMove ();
+						break;
+					}
+					case 2: {
+						AIMove ();
+						break;
+					}
+					case 3: {
+						AIRandomMove ();
+						break;
+					} 
+					default: {
+						break;
+					}
+				}
 			}
 		}
 
@@ -172,7 +164,7 @@ namespace Application {
 			}
 		}
 
-		private bool performAITake () {
+		private void performAITake () {
 			if (logic.canTakeUpAndRight (aiPieceStartPosX, aiPieceStartPosZ, gameBoard)) {
 				takeUpAndRight (aiPieceStartPosX, aiPieceStartPosZ, interactionPiece);
 				takeWithAiPiece (hit, -2, 2, -1, 1);
@@ -186,8 +178,6 @@ namespace Application {
 				takeDownAndLeft (aiPieceStartPosX, aiPieceStartPosZ, interactionPiece);
 				takeWithAiPiece (hit, 2, -2, 1, -1);
 			}
-
-			return true;
 		}
 
 		private void getAIQueueMoves() {
@@ -237,16 +227,17 @@ namespace Application {
 		private void AIMove() {
 			int i = 0, j = 0;
 			Ray aiRay = new Ray();
-			bool aiQueueMoved = false;
-			while (j < 8 && !aiQueueMoved) {
-				while(i < 8 && !aiQueueMoved) {
+			bool hasMoved = false;
+			while (j < 8 && !hasMoved) {
+				while(i < 8 && !hasMoved) {
 					aiRay.origin = new Vector3 (i, 1.0f, j);
 					aiRay.direction = new Vector3 (0 , -1.0f, 0);
 					if ((Physics.Raycast (aiRay, out hit) && hit.collider.tag.Contains("Player2"))) {
 						int hitPosX = (int)hit.transform.position.x;
 						int hitPosZ = (int)hit.transform.position.z;
 						if(logic.canMove(hitPosX, hitPosZ, gameBoard)) {
-							aiQueueMoved = performAIMove (hitPosX, hitPosZ);
+							performAIMove (hitPosX, hitPosZ);
+							hasMoved = true;
 						}
 					}
 					i++;
@@ -307,8 +298,6 @@ namespace Application {
 				moveDownAndLeft (hitPosX, hitPosZ, hit.collider.gameObject);
 				hit.collider.gameObject.transform.position = new Vector3 (hitPosX + 1, 0.1f, hitPosZ - 1);
 			} 
-
-			return true;
 		}
 
 		private void take (float tempx, float tempz) {
