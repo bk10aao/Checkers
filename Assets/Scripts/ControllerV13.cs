@@ -71,23 +71,31 @@ namespace Application {
 		}
 
 		void implementPlayerClick () {
+			PlayerPiece piece = gameBoard.returnPlayerPiece (startPosX, startPosZ);
 			if (logic.playerHasTakeableMoves (playerNo, gameBoard) && logic.canTake (startPosX, startPosZ, gameBoard)) {
 				interactionPiece.transform.position = new Vector3 (startPosX, 1.0f, startPosZ);
 			} else if (logic.canMove (startPosX, startPosZ, gameBoard) && !logic.playerHasTakeableMoves (playerNo, gameBoard)) {
 				interactionPiece.transform.position = new Vector3 (startPosX, 1.0f, startPosZ);
 			} else {
-				interactionPiece.transform.position = new Vector3 (startPosX, 0.1f, startPosZ);
+				if(piece.isKing)
+					interactionPiece.transform.position = new Vector3 (startPosX, 0.4f, startPosZ);
+				else
+					interactionPiece.transform.position = new Vector3 (startPosX, 0.1f, startPosZ);
 				interactionPiece = null;
 			}
 		}
 
 		void implementPlayerClickRelease (int endPointX, int endPointZ) {
+			PlayerPiece piece = gameBoard.returnPlayerPiece (startPosX, startPosZ);
 			if (logic.canTake (startPosX, startPosZ, gameBoard)) {
 				take (endPointX, endPointZ);
 			} else if (logic.canMove (startPosX, startPosZ, gameBoard)) {
 				move (endPointX, endPointZ);
 			} else {
-				interactionPiece.transform.position = new Vector3 (startPosX, 0.1f, startPosX);
+				if(piece.isKing)
+					interactionPiece.transform.position = new Vector3 (startPosX, 0.4f, startPosZ);
+				else
+					interactionPiece.transform.position = new Vector3 (startPosX, 0.1f, startPosZ);
 			}
 		}
 
@@ -155,10 +163,14 @@ namespace Application {
 				}
 			}
 		}
-
+		//TODO fix player take 
 		private void takeWithAiPiece (RaycastHit hit, int moveToXPos, int moveToZPos, int enemyXPos, int enemyZPos ) {
 			destroyPiece ((int)hit.transform.position.x, (int)hit.transform.position.z, moveToXPos, moveToZPos);
-			hit.collider.gameObject.transform.position = new Vector3 (this.hit.transform.position.x + enemyXPos, 0.1f, this.hit.transform.position.z + enemyZPos );
+			PlayerPiece piece = gameBoard.returnPlayerPiece ((int)hit.transform.position.x, (int)hit.transform.position.z);
+			if(piece.isKing)
+				hit.collider.gameObject.transform.position = new Vector3 (this.hit.transform.position.x + enemyXPos, 0.4f, this.hit.transform.position.z + enemyZPos );
+			else
+				hit.collider.gameObject.transform.position = new Vector3 (this.hit.transform.position.x + enemyXPos, 0.1f, this.hit.transform.position.z + enemyZPos );
 			if (moveToXPos == 0) {
 				transformPieceToKing(gameBoard.returnPlayerPiece(moveToXPos, moveToZPos), hit.collider.gameObject);
 			}
@@ -263,41 +275,69 @@ namespace Application {
 					}
 				}	
 			}
+			getAIQueueMoves ();
 		}
 			
 		private void move (int tempx, int tempz) {
+			PlayerPiece piece = gameBoard.returnPlayerPiece (startPosX, startPosZ);
 			interactionPiece.transform.position = new Vector3 (startPosX, 0.1f, startPosZ);
 			if ((tempx > startPosX) && ((tempz - startPosZ) < 1.5) && ((tempz - startPosZ) > 0) && (tempx - startPosX > 0) && (tempx - startPosX < 1.5) && logic.canMoveDownAndRight (startPosX, startPosZ, gameBoard)) {
 				moveDownAndRight(startPosX, startPosZ, interactionPiece);
-				interactionPiece.transform.position = new Vector3 (tempx, 0.1f, tempz);
+				if(piece.isKing) 
+					interactionPiece.transform.position = new Vector3 (tempx, 0.4f, tempz);
+				else
+					interactionPiece.transform.position = new Vector3 (tempx, 0.1f, tempz);
 			} else if ((tempx > startPosX) && ((tempz - startPosZ) < 0) && ((tempz - startPosZ) > -1.5) && (tempx - startPosX > 0) && (tempx - startPosX < 1.5) && logic.canMoveDownAndLeft (startPosX, startPosZ, gameBoard)) {
 				moveDownAndLeft(startPosX, startPosZ, interactionPiece);
-				interactionPiece.transform.position = new Vector3 (tempx, 0.1f, tempz);
+				if(piece.isKing) 
+					interactionPiece.transform.position = new Vector3 (tempx, 0.4f, tempz);
+				else
+					interactionPiece.transform.position = new Vector3 (tempx, 0.1f, tempz);
 			} else if ((tempx < startPosX) && ((tempz - startPosZ) < 1.5) && ((tempz - startPosZ) > 0) && (tempz - startPosZ < 1.5) && (tempx - startPosX < 0) && (tempx - startPosX > -1.5) && logic.canMoveUpAndRight (startPosX, startPosZ, gameBoard)) {
 				moveUpAndRight(startPosX, startPosZ, interactionPiece);
-				interactionPiece.transform.position = new Vector3 (tempx, 0.1f, tempz);
+				if(piece.isKing) 
+					interactionPiece.transform.position = new Vector3 (tempx, 0.4f, tempz);
+				else
+					interactionPiece.transform.position = new Vector3 (tempx, 0.1f, tempz);
 			} else if ((tempx < startPosX) && ((tempz - startPosZ) < 0) && ((tempz - startPosZ) > -1.5) && (tempz - startPosZ < 0) && (tempx - startPosX < 0) && (tempx - startPosX > -1.5) && logic.canMoveUpAndLeft (startPosX, startPosZ, gameBoard)) {
 				moveUpAndLeft(startPosX, startPosZ, interactionPiece);
-				interactionPiece.transform.position = new Vector3 (tempx, 0.1f, tempz);
+				if(piece.isKing) 
+					interactionPiece.transform.position = new Vector3 (tempx, 0.4f, tempz);
+				else
+					interactionPiece.transform.position = new Vector3 (tempx, 0.1f, tempz);
 			} else {
 				interactionPiece.transform.position = new Vector3 (startPosX, 0.1f, startPosZ);
 			}
 		}
 
 		bool performAIMove (int hitPosX, int hitPosZ) {
+			PlayerPiece piece = gameBoard.returnPlayerPiece (hitPosX, hitPosZ);
 			if (logic.canMoveUpAndRight (hitPosX, hitPosZ, gameBoard)) {
 				moveUpAndRight (hitPosX, hitPosZ, hit.collider.gameObject);
-				hit.collider.gameObject.transform.position = new Vector3 (hitPosX - 1, 0.1f, hitPosZ + 1);
+				if(piece.isKing) 
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX - 1, 0.4f, hitPosZ + 1);
+				else
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX - 1, 0.1f, hitPosZ + 1);
 			} else if (logic.canMoveUpAndLeft (hitPosX, hitPosZ, gameBoard)) {
 				moveUpAndLeft (hitPosX, hitPosZ, hit.collider.gameObject);
-				hit.collider.gameObject.transform.position = new Vector3 (hitPosX - 1, 0.1f, hitPosZ - 1);
+				if(piece.isKing) 
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX - 1, 0.4f, hitPosZ - 1);				
+				else
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX - 1, 0.1f, hitPosZ - 1);			
 			} else if (logic.canMoveDownAndRight (hitPosX, hitPosZ, gameBoard)) {
 				moveDownAndRight (hitPosX, hitPosZ, hit.collider.gameObject);
-				hit.collider.gameObject.transform.position = new Vector3 (hitPosX + 1, 0.1f, hitPosZ + 1);
+				if(piece.isKing) 
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX + 1, 0.4f, hitPosZ + 1);
+				else
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX + 1, 0.1f, hitPosZ + 1);
 			} else if (logic.canMoveDownAndLeft (hitPosX, hitPosZ, gameBoard)) {
 				moveDownAndLeft (hitPosX, hitPosZ, hit.collider.gameObject);
-				hit.collider.gameObject.transform.position = new Vector3 (hitPosX + 1, 0.1f, hitPosZ - 1);
+				if(piece.isKing)
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX + 1, 0.4f, hitPosZ - 1);
+				else
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX + 1, 0.1f, hitPosZ - 1);
 			} 
+			return true;
 		}
 
 		private void take (float tempx, float tempz) {
@@ -327,6 +367,10 @@ namespace Application {
 
 		private void destroyPiece(int aiStartPosX, int aiStartPosZ, int directionX, int directionZ) {
 			interactionPiece.transform.position = new Vector3 (aiStartPosX + directionX, 0.1f, aiStartPosZ + directionZ);
+			PlayerPiece piece = gameBoard.returnPlayerPiece (aiStartPosX + directionX, aiStartPosZ + directionZ);
+			if(piece.isKing)
+				interactionPiece.transform.position = new Vector3 (aiStartPosX + directionX, 0.4f, aiStartPosZ + directionZ);
+
 			rayRay.origin = new Vector3 (aiStartPosX, 0.1f, aiStartPosZ);
 			rayRay.direction = new Vector3 (directionX, 0.1f, directionZ);
 			if (Physics.Raycast (rayRay, out hit)) {
@@ -344,7 +388,8 @@ namespace Application {
 
 		private void transformPieceToKing(PlayerPiece piece, GameObject playerPiece) {
 			piece.isKing = true;
-			playerPiece.transform.localScale = new Vector3 (1.0f, 1.5f, 1.0f);
+			playerPiece.transform.localScale = new Vector3 (1.0f, 0.4f, 1.0f);
+			playerPiece.transform.localPosition = new Vector3 (playerPiece.transform.localPosition.x, 0.4f, playerPiece.transform.localPosition.z);
 			changePlayer();
 			pieceChangedToKing = true;
 		}
