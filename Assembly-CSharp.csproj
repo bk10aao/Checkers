@@ -48,6 +48,7 @@
      <Compile Include="Assets\Scripts\AIOpponent.cs" />
      <Compile Include="Assets\Scripts\Board.cs" />
      <Compile Include="Assets\Scripts\ControllerV13.cs" />
+     <Compile Include="Assets\Scripts\DragObject.cs" />
      <Compile Include="Assets\Scripts\LogicController.cs" />
      <Compile Include="Assets\Scripts\PlayerPiece.cs" />
      <None Include="Assets\Standard Assets\ParticleSystems\Shaders\PriorityParticleAlpha.shader" />
