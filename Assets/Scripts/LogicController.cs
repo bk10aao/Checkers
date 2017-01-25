@@ -28,24 +28,35 @@ namespace Application {
 		}
 
 		public bool canMoveDownAndRight (int x, int y, Board gameBoard) {
-			PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
-			return (checkComponentMove (piece, 1) && ((y + 1 < 8) && (x + 1 < 8)) && gameBoard.returnPlayerPiece (x + 1, y + 1) == null);
-
+			if (x > -1 && y > -1 && x < 8 && y < 8) {
+				PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
+				return (checkComponentMove (piece, 1) && ((y + 1 < 8) && (x + 1 < 8)) && gameBoard.returnPlayerPiece (x + 1, y + 1) == null);
+			}
+			return false;
 		}
 		
 		public bool canMoveDownAndLeft (int x, int y, Board gameBoard) {
-			PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
-			return  (checkComponentMove (piece, 1) && ((y - 1 > -1) && (x + 1 < 8)) && gameBoard.returnPlayerPiece (x + 1, y - 1) == null);
+			if (x > -1 && y > -1 && x < 8 && y < 8) {
+				PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
+				return  (checkComponentMove (piece, 1) && ((y - 1 > -1) && (x + 1 < 8)) && gameBoard.returnPlayerPiece (x + 1, y - 1) == null);
+			}
+			return false;
 		}
 		
 		public bool canMoveUpAndRight (int x, int y, Board gameBoard) {
-			PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
-			return (checkComponentMove (piece, 2) && ((y + 1 < 8) && (x - 1 > -1)) && gameBoard.returnPlayerPiece (x - 1, y + 1) == null);
+			if (x > -1 && y > -1 && x < 8 && y < 8) {
+				PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
+				return (checkComponentMove (piece, 2) && ((y + 1 < 8) && (x - 1 > -1)) && gameBoard.returnPlayerPiece (x - 1, y + 1) == null);
+			}
+			return false;
 		}
 		
 		public bool canMoveUpAndLeft (int x, int y, Board gameBoard) {
-			PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
-			return (checkComponentMove (piece, 2) && ((y - 1 > -1) && (x - 1 > -1)) && gameBoard.returnPlayerPiece (x - 1, y - 1) == null);
+			if (x > -1 && y > -1 && x < 8 && y < 8) {
+				PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
+				return (checkComponentMove (piece, 2) && ((y - 1 > -1) && (x - 1 > -1)) && gameBoard.returnPlayerPiece (x - 1, y - 1) == null);
+			}
+			return false;
 		}
 
 		static bool checkTakeComponentInitialPosition (PlayerPiece currentPiece, int playerNumber) {
@@ -57,37 +68,45 @@ namespace Application {
 		}
 		
 		public bool canTakeDownAndRight (int x, int y, Board gameBoard) {
-			PlayerPiece currentPiece = gameBoard.returnPlayerPiece (x, y);
-			if (checkTakeComponentInitialPosition (currentPiece, 1) && ((y + 2 < 8) && (x + 2 < 8))) {
-				PlayerPiece enemy = gameBoard.returnPlayerPiece (x + 1, y + 1);
-				return (checkTakeEnemy (currentPiece, enemy) && gameBoard.returnPlayerPiece (x + 2, y + 2) == null);
+			if (x > -1 && y > -1 && x < 8 && y < 8) {
+				PlayerPiece currentPiece = gameBoard.returnPlayerPiece (x, y);
+				if (checkTakeComponentInitialPosition (currentPiece, 1) && ((y + 2 < 8) && (x + 2 < 8))) {
+					PlayerPiece enemy = gameBoard.returnPlayerPiece (x + 1, y + 1);
+					return (checkTakeEnemy (currentPiece, enemy) && gameBoard.returnPlayerPiece (x + 2, y + 2) == null);
+				}
 			}
 			return false;
 		}
 		
 		public bool canTakeDownAndLeft (int x, int y, Board gameBoard) {
-			PlayerPiece currentPiece = gameBoard.returnPlayerPiece (x, y);
-			if (checkTakeComponentInitialPosition (currentPiece, 1) && ((y - 2 > -1) && (x + 2 < 8))) {
-				PlayerPiece enemy = gameBoard.returnPlayerPiece (x + 1, y - 1);
-				return (checkTakeEnemy (currentPiece, enemy) && gameBoard.returnPlayerPiece (x + 2, y - 2) == null); 
+			if (x > -1 && y > -1 && x < 8 && y < 8) {
+				PlayerPiece currentPiece = gameBoard.returnPlayerPiece (x, y);
+				if (checkTakeComponentInitialPosition (currentPiece, 1) && ((y - 2 > -1) && (x + 2 < 8))) {
+					PlayerPiece enemy = gameBoard.returnPlayerPiece (x + 1, y - 1);
+					return (checkTakeEnemy (currentPiece, enemy) && gameBoard.returnPlayerPiece (x + 2, y - 2) == null); 
+				}
 			}
 			return false;
 		}
 		
 		public bool canTakeUpAndLeft (int x, int y, Board gameBoard) {
-			PlayerPiece currentPiece = gameBoard.returnPlayerPiece (x, y);
-			if (checkTakeComponentInitialPosition (currentPiece, 2) && ((y - 2 > -1) && (x - 2 > -1))) {
-				PlayerPiece enemy = gameBoard.returnPlayerPiece (x - 1, y - 1);
-				return (checkTakeEnemy (currentPiece, enemy) && gameBoard.returnPlayerPiece (x - 2, y - 2) == null);
-			} 
+			if (x > -1 && y > -1 && x < 8 && y < 8) {
+				PlayerPiece currentPiece = gameBoard.returnPlayerPiece (x, y);
+				if (checkTakeComponentInitialPosition (currentPiece, 2) && ((y - 2 > -1) && (x - 2 > -1))) {
+					PlayerPiece enemy = gameBoard.returnPlayerPiece (x - 1, y - 1);
+					return (checkTakeEnemy (currentPiece, enemy) && gameBoard.returnPlayerPiece (x - 2, y - 2) == null);
+				}
+			}
 			return false;
 		}
 		
 		public bool canTakeUpAndRight (int x, int y, Board gameBoard) {
-			PlayerPiece currentPiece = gameBoard.returnPlayerPiece (x, y);
-			if (checkTakeComponentInitialPosition (currentPiece, 2) && ((x - 2 > -1) && (y + 2 < 8))) {
-				PlayerPiece enemy = gameBoard.returnPlayerPiece (x - 1, y + 1);
-				return (checkTakeEnemy (currentPiece, enemy) && gameBoard.returnPlayerPiece (x - 2, y + 2) == null);
+			if (x > -1 && y > -1 && x < 8 && y < 8) {
+				PlayerPiece currentPiece = gameBoard.returnPlayerPiece (x, y);
+				if (checkTakeComponentInitialPosition (currentPiece, 2) && ((x - 2 > -1) && (y + 2 < 8))) {
+					PlayerPiece enemy = gameBoard.returnPlayerPiece (x - 1, y + 1);
+					return (checkTakeEnemy (currentPiece, enemy) && gameBoard.returnPlayerPiece (x - 2, y + 2) == null);
+				}
 			}
 			return false;
 		}

@@ -45,11 +45,6 @@ namespace Application {
 			playerPieces[9] = GameObject.FindGameObjectWithTag("Player1-10");
 			playerPieces[10] = GameObject.FindGameObjectWithTag("Player1-11");
 			playerPieces[11] = GameObject.FindGameObjectWithTag("Player1-12");
-			getMoveablePlayerPieces ();
-
-			foreach (GameObject o in moveablePlayerPieces) {
-				Debug.Log ("positions x: " + o.transform.position.x + " y:  " + o.transform.position.y + " z: " + o.transform.position.z);
-			}
 		}
 
 		private void Update () {
@@ -83,7 +78,6 @@ namespace Application {
 		}
 
 		void getMoveablePlayerPieces() {
-			moveablePlayerPieces.Clear ();
 			if (takeablePlayerPieces.Count == 0) {
 				for (int i = 0; i < playerPieces.Length; i++) {
 					GameObject g = playerPieces [i];
@@ -102,7 +96,6 @@ namespace Application {
 		}
 
 		void getTakeablePlayerPieces() {
-			takeablePlayerPieces.Clear ();
 			for (int i = 0; i < playerPieces.Length; i++) {
 				GameObject g = playerPieces [i];
 				if (g != null) {
@@ -122,12 +115,15 @@ namespace Application {
 			if (Input.GetKeyDown ("1")) {
 				aiType = 1;
 				aiText.enabled = false;
+				getMoveablePlayerPieces ();
 			} else if (Input.GetKeyDown ("2")) {
 				aiType = 2;
 				aiText.enabled = false;
+				getMoveablePlayerPieces ();
 			} else if (Input.GetKeyDown ("3")) {
 				aiType = 3;
 				aiText.enabled = false;
+				getMoveablePlayerPieces ();
 			}
 		}
 
@@ -152,7 +148,7 @@ namespace Application {
 		}
 
 		void implementPlayerClickRelease (int endPointX, int endPointZ) {
-			PlayerPiece piece =gameBoard.returnPlayerPiece (startPosX, startPosZ);
+			PlayerPiece piece = gameBoard.returnPlayerPiece (startPosX, startPosZ);
 			if (logic.canTake (startPosX, startPosZ, gameBoard)) {
 				take (endPointX, endPointZ);
 			} else if (logic.canMove (startPosX, startPosZ, gameBoard)) {
@@ -189,7 +185,6 @@ namespace Application {
 			aiRay.direction = new Vector3 (0 , -1.0f, 0);
 			Physics.Raycast (aiRay, out hit);
 			performAIMove (Int32.Parse(positions[0]), Int32.Parse(positions[1]));
-			randomMoves.Clear ();
 		}
 
 		private void AITake() {
@@ -323,7 +318,6 @@ namespace Application {
 		private void move (int tempx, int tempz) {
 			PlayerPiece piece = gameBoard.returnPlayerPiece (startPosX, startPosZ);
 			interactionPiece.transform.position = new Vector3 (startPosX, 0.1f, startPosZ);
-			Debug.Log ("IN MOVE: tempZ - startPosZ: " + (tempz - startPosZ) + ", tempX - startPosX: " + (tempx - startPosX));
 			if ((tempx > startPosX) && ((tempz - startPosZ) < 1.5) && ((tempz - startPosZ) > 0.5) && (tempx - startPosX > 0.25) && (tempx - startPosX < 1.5) && logic.canMoveDownAndRight (startPosX, startPosZ, gameBoard)) {
 				moveDownAndRight(startPosX, startPosZ, interactionPiece);
 				setPieceHeightAfterMove (piece, tempx, tempz);
@@ -339,13 +333,11 @@ namespace Application {
 			} else {
 				interactionPiece.transform.position = new Vector3 (startPosX, 0.1f, startPosZ);
 				setPieceHeightAfterMove (piece, startPosX, startPosZ);
-
 			}
 		}
 
 		private void take (float tempx, float tempz) {
 			interactionPiece.transform.position = new Vector3 (startPosX, 0.1f, startPosZ);
-			Debug.Log ("IN TAKE: tempZ - startPosZ: " + (tempz - startPosZ) + ", tempX - startPosX: " + (tempx - startPosX));
 			if ((tempx > startPosX) && ((tempz - startPosZ > 1.5) && (tempz - startPosZ < 3.5)) && (tempx - startPosX > 1.5) && (tempx - startPosX < 3.5) && logic.canTakeDownAndRight (startPosX, startPosZ, gameBoard)) {
 				takeDownAndRight (startPosX, startPosZ, interactionPiece);
 				destroyPiece(startPosX, startPosZ, 2, 2);
@@ -406,7 +398,9 @@ namespace Application {
 					if(g != null) {
 						(g.GetComponent (typeof(MeshCollider)) as Collider).enabled = true;
 						(g.GetComponent (typeof(Collider)) as Collider).enabled = true;
-						//WE CAN MOVE THE CLEAR ARRAYLIST FUNCTIONALITY IN HERE
+						moveablePlayerPieces.Clear ();
+						takeablePlayerPieces.Clear ();
+						randomMoves.Clear ();
 					}
 				}
 			}
