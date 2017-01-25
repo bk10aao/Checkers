@@ -21,13 +21,35 @@ namespace Application {
 		private Boolean pieceChangedToKing = false;
 
 		private Queue<String> moveableAiPieces = new Queue<String>();
+
+		private ArrayList takeablePlayerPieces = new ArrayList();
+		private ArrayList moveablePlayerPieces = new ArrayList();
 		private ArrayList randomMoves = new ArrayList();
+
+		private GameObject[] playerPieces = new GameObject[12];
 
 		private void Start () {
 			gameBoard.SetupPlayerArray ();
 			logic = new LogicController ();
 			getAIMoves (false);
 			aiText  = GameObject.FindWithTag("aiText").GetComponent<GUIText>() as GUIText;
+			playerPieces[0] = GameObject.FindGameObjectWithTag("Player1-1");
+			playerPieces[1] = GameObject.FindGameObjectWithTag("Player1-2");
+			playerPieces[2] = GameObject.FindGameObjectWithTag("Player1-3");
+			playerPieces[3] = GameObject.FindGameObjectWithTag("Player1-4");
+			playerPieces[4] = GameObject.FindGameObjectWithTag("Player1-5");
+			playerPieces[5] = GameObject.FindGameObjectWithTag("Player1-6");
+			playerPieces[6] = GameObject.FindGameObjectWithTag("Player1-7");
+			playerPieces[7] = GameObject.FindGameObjectWithTag("Player1-8");
+			playerPieces[8] = GameObject.FindGameObjectWithTag("Player1-9");
+			playerPieces[9] = GameObject.FindGameObjectWithTag("Player1-10");
+			playerPieces[10] = GameObject.FindGameObjectWithTag("Player1-11");
+			playerPieces[11] = GameObject.FindGameObjectWithTag("Player1-12");
+			getMoveablePlayerPieces ();
+
+			foreach (GameObject o in moveablePlayerPieces) {
+				Debug.Log ("positions x: " + o.transform.position.x + " y:  " + o.transform.position.y + " z: " + o.transform.position.z);
+			}
 		}
 
 		private void Update () {
@@ -43,6 +65,8 @@ namespace Application {
 						aiSearchImplementation ();
 					}
 				} else {
+					getTakeablePlayerPieces ();
+					getMoveablePlayerPieces ();
 					if (Input.GetMouseButtonDown (0)) {
 						if ((Physics.Raycast (ray, out hit)) && hit.collider.tag.Contains ("Player" + playerNo.ToString ())) {
 							getMoveProperties ();
@@ -53,6 +77,42 @@ namespace Application {
 						int endPointX = (int)hit.collider.transform.localPosition.x;
 						int endPointZ = (int)hit.collider.transform.localPosition.z;
 						implementPlayerClickRelease (endPointX, endPointZ);
+					}
+				}
+			}
+		}
+
+		void getMoveablePlayerPieces() {
+			moveablePlayerPieces.Clear ();
+			if (takeablePlayerPieces.Count == 0) {
+				for (int i = 0; i < playerPieces.Length; i++) {
+					GameObject g = playerPieces [i];
+					if (g != null) {
+						if (logic.canMove ((int)g.transform.position.x, (int)g.transform.position.z, gameBoard)) {
+							(g.GetComponent (typeof(MeshCollider)) as Collider).enabled = true;
+							(g.GetComponent (typeof(Collider)) as Collider).enabled = true;
+							moveablePlayerPieces.Add (g);
+						} else {
+							(g.GetComponent (typeof(MeshCollider)) as Collider).enabled = false;
+							(g.GetComponent (typeof(Collider)) as Collider).enabled = false;
+						}
+					}
+				}
+			}
+		}
+
+		void getTakeablePlayerPieces() {
+			takeablePlayerPieces.Clear ();
+			for (int i = 0; i < playerPieces.Length; i++) {
+				GameObject g = playerPieces [i];
+				if (g != null) {
+					if (logic.canTake ((int)g.transform.position.x, (int)g.transform.position.z, gameBoard)) {
+						(g.GetComponent (typeof(MeshCollider)) as Collider).enabled = true;
+						(g.GetComponent (typeof(Collider)) as Collider).enabled = true;
+						takeablePlayerPieces.Add (g);
+					} else {
+						(g.GetComponent (typeof(MeshCollider)) as Collider).enabled = false;
+						(g.GetComponent (typeof(Collider)) as Collider).enabled = false;
 					}
 				}
 			}
@@ -82,7 +142,9 @@ namespace Application {
 			if (logic.playerHasTakeableMoves (playerNo, gameBoard) && logic.canTake (startPosX, startPosZ, gameBoard)) {
 				interactionPiece.transform.position = new Vector3 (startPosX, 1.0f, startPosZ);
 			} else if (logic.canMove (startPosX, startPosZ, gameBoard) && !logic.playerHasTakeableMoves (playerNo, gameBoard)) {
-				interactionPiece.transform.position = new Vector3 (startPosX, 1.0f, startPosZ);
+				if(moveablePlayerPieces.Contains(interactionPiece)) {
+					interactionPiece.transform.position = new Vector3 (startPosX, 1.0f, startPosZ);
+				}
 			} else {
 				interactionPiece.transform.position = new Vector3 (startPosX, 0.1f, startPosZ);
 				interactionPiece = null;
@@ -261,50 +323,37 @@ namespace Application {
 		private void move (int tempx, int tempz) {
 			PlayerPiece piece = gameBoard.returnPlayerPiece (startPosX, startPosZ);
 			interactionPiece.transform.position = new Vector3 (startPosX, 0.1f, startPosZ);
-
-			Debug.Log ("tempZ - startPosZ: " + (tempz - startPosZ) + ", tempX - startPosX: " + (tempx - startPosX));
-
+			Debug.Log ("IN MOVE: tempZ - startPosZ: " + (tempz - startPosZ) + ", tempX - startPosX: " + (tempx - startPosX));
 			if ((tempx > startPosX) && ((tempz - startPosZ) < 1.5) && ((tempz - startPosZ) > 0.5) && (tempx - startPosX > 0.25) && (tempx - startPosX < 1.5) && logic.canMoveDownAndRight (startPosX, startPosZ, gameBoard)) {
-				Debug.Log ("IN MOVE: got in here moved down and right");
 				moveDownAndRight(startPosX, startPosZ, interactionPiece);
 				setPieceHeightAfterMove (piece, tempx, tempz);
 			} else if ((tempx > startPosX) && ((tempz - startPosZ) < -0.5) && ((tempz - startPosZ) > -1.5) && (tempx - startPosX > 0.25) && (tempx - startPosX < 1.5) && logic.canMoveDownAndLeft (startPosX, startPosZ, gameBoard)) {
-				Debug.Log ("got in here moved down and left");
 				moveDownAndLeft(startPosX, startPosZ, interactionPiece);
 				setPieceHeightAfterMove (piece, tempx, tempz);
 			} else if ((tempx < startPosX) && ((tempz - startPosZ) < 1.5) && ((tempz - startPosZ) > 0.5) && (tempx - startPosX < -0.25) && (tempx - startPosX > -1.5) && logic.canMoveUpAndRight (startPosX, startPosZ, gameBoard)) {
-				Debug.Log ("got in here moved Up and right");
 				moveUpAndRight(startPosX, startPosZ, interactionPiece);
 				setPieceHeightAfterMove (piece, tempx, tempz);
 			} else if ((tempx < startPosX) && ((tempz - startPosZ) < -0.5) && ((tempz - startPosZ) > -1.5) && (tempx - startPosX < -0.25) && (tempx - startPosX > -1.5) && logic.canMoveUpAndLeft (startPosX, startPosZ, gameBoard)) {
-				Debug.Log ("got in here moved up and left");
 				moveUpAndLeft(startPosX, startPosZ, interactionPiece);
 				setPieceHeightAfterMove (piece, tempx, tempz);
 			} else {
-				Debug.Log ("got in here resetting location");
 				interactionPiece.transform.position = new Vector3 (startPosX, 0.1f, startPosZ);
 				setPieceHeightAfterMove (piece, startPosX, startPosZ);
 
 			}
 		}
 
-		//TODO: need to implement the X checks!!!
 		private void take (float tempx, float tempz) {
 			interactionPiece.transform.position = new Vector3 (startPosX, 0.1f, startPosZ);
 			Debug.Log ("IN TAKE: tempZ - startPosZ: " + (tempz - startPosZ) + ", tempX - startPosX: " + (tempx - startPosX));
-
 			if ((tempx > startPosX) && ((tempz - startPosZ > 1.5) && (tempz - startPosZ < 3.5)) && (tempx - startPosX > 1.5) && (tempx - startPosX < 3.5) && logic.canTakeDownAndRight (startPosX, startPosZ, gameBoard)) {
 				takeDownAndRight (startPosX, startPosZ, interactionPiece);
 				destroyPiece(startPosX, startPosZ, 2, 2);
 				playerTwoPieceCount--;
-				Debug.Log ("taken down and right");
-
 			} else if ((tempx > startPosX) && (tempz - startPosZ > -3.5) && ((tempz - startPosZ) < -1.5) && (tempx - startPosX > 1.5) && (tempx - startPosX < 3.5) && logic.canTakeDownAndLeft (startPosX, startPosZ, gameBoard)) {
 				takeDownAndLeft (startPosX, startPosZ, interactionPiece);
 				destroyPiece(startPosX, startPosZ, 2, -2);
 				playerTwoPieceCount--;
-				Debug.Log ("taken down and left");
-
 			} else if ((tempx < startPosX) && ((tempz - startPosZ < -1.5) && (tempz - startPosZ > -3.5)) && (tempx - startPosX < -1.5) && (tempx - startPosX > -3.5) && (tempx - startPosX > -3) && logic.canTakeUpAndLeft (startPosX, startPosZ, gameBoard)) {
 				takeUpAndLeft (startPosX, startPosZ, interactionPiece);
 				destroyPiece(startPosX, startPosZ, -2, -2);
@@ -320,8 +369,7 @@ namespace Application {
 				aiText.enabled = true;
 			}
 		}
-
-
+			
 		bool performAIMove (int hitPosX, int hitPosZ) {
 			if (logic.canMoveUpAndRight (hitPosX, hitPosZ, gameBoard)) {
 				moveUpAndRight (hitPosX, hitPosZ, hit.collider.gameObject); 
@@ -352,6 +400,16 @@ namespace Application {
 		}
 
 		private void changePlayer () {
+			if(playerNo == 1) {
+				for (int i = 0; i < playerPieces.Length; i++) {
+					GameObject g = playerPieces [i];
+					if(g != null) {
+						(g.GetComponent (typeof(MeshCollider)) as Collider).enabled = true;
+						(g.GetComponent (typeof(Collider)) as Collider).enabled = true;
+						//WE CAN MOVE THE CLEAR ARRAYLIST FUNCTIONALITY IN HERE
+					}
+				}
+			}
 			playerNo = playerNo == 1 ? 2 : 1;
 			pieceChangedToKing = false;
 		}
