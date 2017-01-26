@@ -33,7 +33,7 @@ namespace Application {
 			logic = new LogicController ();
 			getAIMoves (false);
 			aiText  = GameObject.FindWithTag("aiText").GetComponent<GUIText>() as GUIText;
-			addOpponentPlayerObjects ();
+			addPlayerObjects ();
 		}
 
 		private void Update () {
@@ -64,7 +64,7 @@ namespace Application {
 			}
 		}
 
-		void addOpponentPlayerObjects () {
+		void addPlayerObjects () {
 			playerPieces [0] = GameObject.FindGameObjectWithTag ("Player1-1");
 			playerPieces [1] = GameObject.FindGameObjectWithTag ("Player1-2");
 			playerPieces [2] = GameObject.FindGameObjectWithTag ("Player1-3");
