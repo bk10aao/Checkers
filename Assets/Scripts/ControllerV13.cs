@@ -351,11 +351,11 @@ namespace Application {
 		}
 
 		bool moveDownCheck (int tempx) {
-			return ((tempx - startPosX) > 0.25) && ((tempx - startPosX) < 1.5);
+			return ((tempx - startPosX) > 0.25) && ((tempx - startPosX) < 1.45);
 		}
 
 		bool moveUpCheck (int tempx) {
-			return ((tempx - startPosX) < -0.25) && ((tempx - startPosX) > -1.5);
+			return ((tempx - startPosX) < -0.25) && ((tempx - startPosX) > -1.45);
 		}
 
 		bool moveRightCheck (int tempz) {
@@ -363,7 +363,7 @@ namespace Application {
 		}
 
 		bool moveLeftCheck (int tempz) {
-			return ((tempz - startPosZ) < -0.5) && ((tempz - startPosZ) > -1.5);
+			return ((tempz - startPosZ) < -0.5) && ((tempz - startPosZ) > -1.45);
 		}
 
 		private void take (float tempx, float tempz) {
@@ -408,19 +408,19 @@ namespace Application {
 		}
 
 		bool takeRightCheck (float tempz) {
-			return (tempz - startPosZ > 1.5) && (tempz - startPosZ < 3.5);
+			return (tempz - startPosZ > 1.45) && (tempz - startPosZ < 2.88);
 		}
 
 		bool takeLeftCheck (float tempz) {
-			return (tempz - startPosZ > -3.5) && ((tempz - startPosZ) < -1.5);
+			return (tempz - startPosZ > -2.88) && ((tempz - startPosZ) < -1.45);
 		}
 
 		bool takeDownCheck (float tempx) {
-			return (tempx - startPosX > 1.5) && (tempx - startPosX < 3.5);
+			return (tempx - startPosX > 1.45) && (tempx - startPosX < 2.88);
 		}
 
 		bool takeUpCheck (float tempx) {
-			return (tempx - startPosX < -1.5) && (tempx - startPosX > -3.5);
+			return (tempx - startPosX < -1.45) && (tempx - startPosX > -2.88);
 		}
 			
 		bool performAIMove (int hitPosX, int hitPosZ) {
