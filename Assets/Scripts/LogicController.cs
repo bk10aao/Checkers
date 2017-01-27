@@ -7,9 +7,7 @@ namespace Application {
 
 	public class LogicController {	
 		
-		public  LogicController () {
-			
-		}
+		public  LogicController () { }
 
 		public int getOpponent (int playerNo) {
 			return playerNo = playerNo == 1 ? 2 : 1;

@@ -13,7 +13,7 @@ namespace Application {
 		private Ray rayRay = new Ray();
 
 		private GameObject interactionPiece;
-		GUIText aiText;
+		private GUIText aiText;
 
 		private int startPosX, startPosZ, aiPieceStartPosX, aiPieceStartPosZ, playerNo = 1, 
 					playerOnePieceCount = 12, playerTwoPieceCount = 12, aiType = 0;
@@ -64,7 +64,7 @@ namespace Application {
 			}
 		}
 
-		void addPlayerObjects () {
+		private void addPlayerObjects () {
 			playerPieces [0] = GameObject.FindGameObjectWithTag ("Player1-1");
 			playerPieces [1] = GameObject.FindGameObjectWithTag ("Player1-2");
 			playerPieces [2] = GameObject.FindGameObjectWithTag ("Player1-3");
@@ -79,7 +79,7 @@ namespace Application {
 			playerPieces [11] = GameObject.FindGameObjectWithTag ("Player1-12");
 		}
 
-		void getMoveablePlayerPieces() {
+		private void getMoveablePlayerPieces() {
 			if (takeablePlayerPieces.Count == 0) {
 				for (int i = 0; i < playerPieces.Length; i++) {
 					GameObject g = playerPieces [i];
@@ -97,7 +97,7 @@ namespace Application {
 			}
 		}
 
-		void getTakeablePlayerPieces() {
+		private void getTakeablePlayerPieces() {
 			for (int i = 0; i < playerPieces.Length; i++) {
 				GameObject g = playerPieces [i];
 				if (g != null) {
@@ -113,7 +113,7 @@ namespace Application {
 			}
 		}
 
-		void getOpponentType () {
+		private void getOpponentType () {
 			if (Input.GetKeyDown ("1")) {
 				aiType = 1;
 				aiText.enabled = false;
@@ -129,14 +129,14 @@ namespace Application {
 			}
 		}
 
-		void getMoveProperties () {
+		private void getMoveProperties () {
 			startPosX = (int)hit.collider.transform.localPosition.x;
 			startPosZ = (int)hit.collider.transform.localPosition.z;
 			interactionPiece = hit.collider.gameObject;
 			implementPlayerClick ();
 		}
 
-		void implementPlayerClick () {
+		private void implementPlayerClick () {
 			if (logic.playerHasTakeableMoves (playerNo, gameBoard) && logic.canTake (startPosX, startPosZ, gameBoard)) {
 				interactionPiece.transform.position = new Vector3 (startPosX, 1.0f, startPosZ);
 			} else if (logic.canMove (startPosX, startPosZ, gameBoard) && !logic.playerHasTakeableMoves (playerNo, gameBoard)) {
@@ -148,7 +148,7 @@ namespace Application {
 			}
 		}
 
-		void implementPlayerClickRelease (int endPointX, int endPointZ) {
+		private void implementPlayerClickRelease (int endPointX, int endPointZ) {
 			PlayerPiece piece = gameBoard.returnPlayerPiece (startPosX, startPosZ);
 			if (logic.canTake (startPosX, startPosZ, gameBoard)) {
 				take (endPointX, endPointZ);
@@ -156,11 +156,10 @@ namespace Application {
 				move (endPointX, endPointZ);
 			} else {
 				setPieceHeightAfterMove (piece, startPosX, startPosZ);
-				interactionPiece.transform.position = new Vector3 (startPosX, 0.1f, startPosZ);
 			}
 		}
 
-		void aiSearchImplementation() {
+		private void aiSearchImplementation() {
 			switch (aiType) {
 				case 1: {
 					AIQueueMove ();
@@ -334,35 +333,35 @@ namespace Application {
 			}
 		}
 
-		bool MoveDownAndRightRangeCheck (int tempx, int tempz) {
+		private bool MoveDownAndRightRangeCheck (int tempx, int tempz) {
 			return (tempx > startPosX) && moveRightCheck (tempz) && moveDownCheck (tempx);
 		}
 
-		bool moveDownAndLeftRangeCheck (int tempx, int tempz){
+		private bool moveDownAndLeftRangeCheck (int tempx, int tempz){
 			return (tempx > startPosX) && moveLeftCheck (tempz) && moveDownCheck (tempx);
 		}
 
-		bool moveUpAndRightRangeCheck (int tempx, int tempz) {
+		private bool moveUpAndRightRangeCheck (int tempx, int tempz) {
 			return (tempx < startPosX) && moveRightCheck (tempz) && moveUpCheck (tempx);
 		}
 
-		bool moveUpAndLeftRangeCheck (int tempx, int tempz) {
+		private bool moveUpAndLeftRangeCheck (int tempx, int tempz) {
 			return (tempx < startPosX) && moveLeftCheck (tempz) && moveUpCheck(tempx);
 		}
 
-		bool moveDownCheck (int tempx) {
+		private bool moveDownCheck (int tempx) {
 			return ((tempx - startPosX) > 0.25) && ((tempx - startPosX) < 1.45);
 		}
 
-		bool moveUpCheck (int tempx) {
+		private bool moveUpCheck (int tempx) {
 			return ((tempx - startPosX) < -0.25) && ((tempx - startPosX) > -1.45);
 		}
 
-		bool moveRightCheck (int tempz) {
+		private bool moveRightCheck (int tempz) {
 			return ((tempz - startPosZ) < 1.5) && ((tempz - startPosZ) > 0.5);
 		}
 
-		bool moveLeftCheck (int tempz) {
+		private bool moveLeftCheck (int tempz) {
 			return ((tempz - startPosZ) < -0.5) && ((tempz - startPosZ) > -1.45);
 		}
 
@@ -391,35 +390,35 @@ namespace Application {
 			}
 		}
 
-		bool takeDownAndRightRangeCheck (float tempx, float tempz) {
+		private bool takeDownAndRightRangeCheck (float tempx, float tempz) {
 			return (tempx > startPosX) && takeRightCheck (tempz) && takeDownCheck (tempx);
 		}
 
-		bool takeDownAndLeftRangeCheck (float tempx, float tempz) {
+		private bool takeDownAndLeftRangeCheck (float tempx, float tempz) {
 			return (tempx > startPosX) && takeLeftCheck (tempz) && takeDownCheck (tempx);
 		}
 
-		bool takeUpAndLeftRangeCheck (float tempx, float tempz) {
+		private bool takeUpAndLeftRangeCheck (float tempx, float tempz) {
 			return (tempx < startPosX) && takeLeftCheck (tempz) && takeUpCheck (tempx);
 		}
 
-		bool takeUpAndRightRangeCheck (float tempx, float tempz) {
+		private bool takeUpAndRightRangeCheck (float tempx, float tempz) {
 			return (tempx < startPosX) && takeRightCheck (tempz) && takeUpCheck (tempx);
 		}
 
-		bool takeRightCheck (float tempz) {
+		private bool takeRightCheck (float tempz) {
 			return (tempz - startPosZ > 1.45) && (tempz - startPosZ < 2.88);
 		}
 
-		bool takeLeftCheck (float tempz) {
+		private bool takeLeftCheck (float tempz) {
 			return (tempz - startPosZ > -2.88) && ((tempz - startPosZ) < -1.45);
 		}
 
-		bool takeDownCheck (float tempx) {
+		private bool takeDownCheck (float tempx) {
 			return (tempx - startPosX > 1.45) && (tempx - startPosX < 2.88);
 		}
 
-		bool takeUpCheck (float tempx) {
+		private bool takeUpCheck (float tempx) {
 			return (tempx - startPosX < -1.45) && (tempx - startPosX > -2.88);
 		}
 			
