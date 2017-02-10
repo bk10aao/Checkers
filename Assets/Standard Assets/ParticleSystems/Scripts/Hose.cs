@@ -27,8 +27,10 @@ namespace UnityStandardAssets.Effects
 
             foreach (var system in hoseWaterSystems)
             {
+				ParticleSystem.EmissionModule em = system.emission;
                 system.startSpeed = m_Power;
-                system.enableEmission = (m_Power > minPower*1.1f);
+				em.enabled = (m_Power > minPower*1.1f);
+
             }
         }
     }

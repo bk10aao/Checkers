@@ -18,7 +18,6 @@ namespace UnityStandardAssets.Effects
             m_ParticleSystem = GetComponent<ParticleSystem>();
         }
 
-
         private void OnParticleCollision(GameObject other)
         {
             int safeLength = m_ParticleSystem.GetSafeCollisionEventSize();
@@ -38,12 +37,13 @@ namespace UnityStandardAssets.Effects
                     lastSoundTime = Time.time;
                 }
 
-                var col = m_CollisionEvents[i].collider;
+				var col = m_CollisionEvents[i].colliderComponent.GetComponent<Rigidbody>();
 
-                if (col.attachedRigidbody != null)
+				//Rigidbody x = col.GetComponent<Rigidbody>();
+				if (col != null)
                 {
                     Vector3 vel = m_CollisionEvents[i].velocity;
-                    col.attachedRigidbody.AddForce(vel*force, ForceMode.Impulse);
+					col.AddForce(vel*force, ForceMode.Impulse);
                 }
 
                 other.BroadcastMessage("Extinguish", SendMessageOptions.DontRequireReceiver);

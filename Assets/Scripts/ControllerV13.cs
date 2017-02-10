@@ -184,7 +184,7 @@ namespace Application {
 			aiRay.origin = new Vector3 (Int32.Parse(positions[0]), 1.0f, Int32.Parse(positions[1]));
 			aiRay.direction = new Vector3 (0 , -1.0f, 0);
 			Physics.Raycast (aiRay, out hit);
-			performAIMove (Int32.Parse(positions[0]), Int32.Parse(positions[1]));
+			performRandomAIMove (Int32.Parse(positions[0]), Int32.Parse(positions[1]));
 		}
 
 		private void AITake() {
@@ -456,14 +456,18 @@ namespace Application {
 					if(g != null) {
 						(g.GetComponent (typeof(MeshCollider)) as Collider).enabled = true;
 						(g.GetComponent (typeof(Collider)) as Collider).enabled = true;
-						moveablePlayerPieces.Clear ();
-						takeablePlayerPieces.Clear ();
-						randomMoves.Clear ();
+						clearPlayerArrays ();
 					}
 				}
 			}
 			playerNo = playerNo == 1 ? 2 : 1;
 			pieceChangedToKing = false;
+		}
+
+		void clearPlayerArrays () {
+			moveablePlayerPieces.Clear ();
+			takeablePlayerPieces.Clear ();
+			randomMoves.Clear ();
 		}
 
 		private void transformPieceToKing(PlayerPiece piece, GameObject playerPiece) {
@@ -543,6 +547,235 @@ namespace Application {
 			if (logic.canMoveUpAndLeft (x, y, gameBoard)) {
 				PlayerPiece piece = gameBoard.returnPlayerPiece (x, y);
 				updateGameBoardOnMove(x, y, -1, -1, piece.playerNo, playerPiece, piece);
+			}
+		}
+
+		//AI Random move section
+		bool performRandomAIMove (int hitPosX, int hitPosZ) {
+			if (logic.canMoveUpAndRight (hitPosX, hitPosZ, gameBoard) && logic.canMoveUpAndLeft (hitPosX, hitPosZ, gameBoard) && logic.canMoveDownAndRight (hitPosX, hitPosZ, gameBoard) && logic.canMoveDownAndLeft (hitPosX, hitPosZ, gameBoard)) {
+				AIRandomAllDirections (hitPosX, hitPosZ);	
+			} else if (logic.canMoveUpAndRight (hitPosX, hitPosZ, gameBoard) && logic.canMoveUpAndLeft (hitPosX, hitPosZ, gameBoard) && logic.canMoveDownAndRight (hitPosX, hitPosZ, gameBoard)) {
+				AIRandomRightBothDirectionsUpAndDownAndRight (hitPosX, hitPosZ);
+			} else if (logic.canMoveUpAndRight (hitPosX, hitPosZ, gameBoard) && logic.canMoveUpAndLeft (hitPosX, hitPosZ, gameBoard) && logic.canMoveDownAndLeft (hitPosX, hitPosZ, gameBoard)) {
+				AIRandomUpBothDirectionsAndDownAndLeft (hitPosX, hitPosZ);
+			} else if (logic.canMoveDownAndRight (hitPosX, hitPosZ, gameBoard) && logic.canMoveDownAndLeft (hitPosX, hitPosZ, gameBoard) && logic.canMoveUpAndLeft (hitPosX, hitPosZ, gameBoard)) {
+				AIRandomDownBothDirectionsAndUpAndLeft (hitPosX, hitPosZ);
+			} else if (logic.canMoveDownAndRight (hitPosX, hitPosZ, gameBoard) && logic.canMoveDownAndLeft (hitPosX, hitPosZ, gameBoard) && logic.canMoveUpAndRight (hitPosX, hitPosZ, gameBoard)) {
+				AIRandomDownBothDirectionsAndUpAndRight (hitPosX, hitPosZ);
+			} else if (logic.canMoveDownAndLeft (hitPosX, hitPosZ, gameBoard) && logic.canMoveDownAndRight (hitPosX, hitPosZ, gameBoard)) {
+				AIRandomDownBothDirections (hitPosX, hitPosZ);
+			} else if (logic.canMoveDownAndLeft (hitPosX, hitPosZ, gameBoard) && logic.canMoveUpAndLeft (hitPosX, hitPosZ, gameBoard)) {
+				AIRandomLeftBothDirections (hitPosX, hitPosZ);
+			} else if (logic.canMoveUpAndLeft (hitPosX, hitPosZ, gameBoard) && logic.canMoveUpAndRight (hitPosX, hitPosZ, gameBoard)) {
+				AIRandomUpBothDirections (hitPosX, hitPosZ);
+			} else if (logic.canMoveUpAndRight (hitPosX, hitPosZ, gameBoard) && logic.canMoveDownAndRight (hitPosX, hitPosZ, gameBoard)) {
+				AIRandomRightBothDirections (hitPosX, hitPosZ);
+			} else if (logic.canMoveUpAndRight (hitPosX, hitPosZ, gameBoard) && logic.canMoveDownAndLeft (hitPosX, hitPosZ, gameBoard)) {
+				AIRandomUpAndRightOrDownAndLeft (hitPosX, hitPosZ);
+			} else if (logic.canMoveUpAndLeft (hitPosX, hitPosZ, gameBoard) && logic.canMoveDownAndRight (hitPosX, hitPosZ, gameBoard)) {
+				AIRandomUpAndLeftOrDownAndRight (hitPosX, hitPosZ);
+			} else if (logic.canMoveUpAndRight (hitPosX, hitPosZ, gameBoard)) {
+				moveUpAndRight (hitPosX, hitPosZ, hit.collider.gameObject);
+				hit.collider.gameObject.transform.position = new Vector3 (hitPosX - 1, 0.1f, hitPosZ + 1);
+			} else if (logic.canMoveUpAndLeft (hitPosX, hitPosZ, gameBoard)) {
+				moveUpAndLeft (hitPosX, hitPosZ, hit.collider.gameObject);
+				hit.collider.gameObject.transform.position = new Vector3 (hitPosX - 1, 0.1f, hitPosZ - 1);
+			} else if (logic.canMoveDownAndRight (hitPosX, hitPosZ, gameBoard)) {
+				moveDownAndRight (hitPosX, hitPosZ, hit.collider.gameObject);
+				hit.collider.gameObject.transform.position = new Vector3 (hitPosX + 1, 0.1f, hitPosZ + 1);
+			} else if (logic.canMoveDownAndLeft (hitPosX, hitPosZ, gameBoard)) {
+				moveDownAndLeft (hitPosX, hitPosZ, hit.collider.gameObject);
+				hit.collider.gameObject.transform.position = new Vector3 (hitPosX + 1, 0.1f, hitPosZ - 1);
+			} 
+			return true;
+		}
+
+		void AIRandomAllDirections (int hitPosX, int hitPosZ) {
+			System.Random r = new System.Random ();
+			switch (r.Next (5)) 
+			{
+				case 1:
+					moveDownAndLeft (hitPosX, hitPosZ, hit.collider.gameObject);
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX + 1, 0.1f, hitPosZ - 1);
+					break;
+				case 2:
+					moveDownAndRight (hitPosX, hitPosZ, hit.collider.gameObject);
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX + 1, 0.1f, hitPosZ + 1);
+					break;
+				case 3:
+					moveUpAndLeft (hitPosX, hitPosZ, hit.collider.gameObject);
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX - 1, 0.1f, hitPosZ - 1);
+					break;
+				case 4:
+					moveUpAndRight (hitPosX, hitPosZ, hit.collider.gameObject);
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX - 1, 0.1f, hitPosZ + 1);
+					break;
+			}
+		}
+
+		void AIRandomRightBothDirectionsUpAndDownAndRight (int hitPosX, int hitPosZ) {
+			System.Random r = new System.Random ();
+			switch (r.Next (4)) 
+			{
+				case 1:
+					moveDownAndRight (hitPosX, hitPosZ, hit.collider.gameObject);
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX + 1, 0.1f, hitPosZ + 1);
+					break;
+				case 2:
+					moveUpAndLeft (hitPosX, hitPosZ, hit.collider.gameObject);
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX - 1, 0.1f, hitPosZ - 1);
+					break;
+				case 3:
+					moveUpAndRight (hitPosX, hitPosZ, hit.collider.gameObject);
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX - 1, 0.1f, hitPosZ + 1);
+					break;
+			}
+		}
+
+		void AIRandomUpBothDirectionsAndDownAndLeft (int hitPosX, int hitPosZ) {
+			System.Random r = new System.Random ();
+			switch (r.Next (4)) 
+			{
+				case 1:
+					moveDownAndLeft (hitPosX, hitPosZ, hit.collider.gameObject);
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX + 1, 0.1f, hitPosZ - 1);
+					break;
+				case 2:
+					moveUpAndLeft (hitPosX, hitPosZ, hit.collider.gameObject);
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX - 1, 0.1f, hitPosZ - 1);
+					break;
+				case 3:
+					moveUpAndRight (hitPosX, hitPosZ, hit.collider.gameObject);
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX - 1, 0.1f, hitPosZ + 1);
+					break;
+			}
+		}
+
+		void AIRandomDownBothDirectionsAndUpAndLeft (int hitPosX, int hitPosZ) {
+			System.Random r = new System.Random ();
+			switch (r.Next (4)) 
+			{
+				case 1:
+					moveDownAndLeft (hitPosX, hitPosZ, hit.collider.gameObject);
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX + 1, 0.1f, hitPosZ - 1);
+					break;
+				case 2:
+					moveDownAndRight (hitPosX, hitPosZ, hit.collider.gameObject);
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX + 1, 0.1f, hitPosZ + 1);
+					break;
+				case 3:
+					moveUpAndLeft (hitPosX, hitPosZ, hit.collider.gameObject);
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX - 1, 0.1f, hitPosZ - 1);
+					break;
+			}
+		}
+
+		void AIRandomDownBothDirectionsAndUpAndRight (int hitPosX, int hitPosZ) {
+			System.Random r = new System.Random ();
+			switch (r.Next (4)) 
+			{
+				case 1:
+					moveDownAndLeft (hitPosX, hitPosZ, hit.collider.gameObject);
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX + 1, 0.1f, hitPosZ - 1);
+					break;
+				case 2:
+					moveDownAndRight (hitPosX, hitPosZ, hit.collider.gameObject);
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX + 1, 0.1f, hitPosZ + 1);
+					break;
+				case 3:
+					moveUpAndRight (hitPosX, hitPosZ, hit.collider.gameObject);
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX - 1, 0.1f, hitPosZ + 1);
+					break;
+			}
+		}
+
+		void AIRandomDownBothDirections (int hitPosX, int hitPosZ) {
+			System.Random r = new System.Random ();
+			switch (r.Next (3))
+			{
+				case 1:
+					moveDownAndLeft (hitPosX, hitPosZ, hit.collider.gameObject);
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX + 1, 0.1f, hitPosZ - 1);
+					break;
+				case 2:
+					moveDownAndRight (hitPosX, hitPosZ, hit.collider.gameObject);
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX + 1, 0.1f, hitPosZ + 1);
+					break;
+				}
+		}
+
+		void AIRandomLeftBothDirections (int hitPosX, int hitPosZ) {
+			System.Random r = new System.Random ();
+			switch (r.Next (3))
+			{
+				case 1:
+					moveUpAndLeft (hitPosX, hitPosZ, hit.collider.gameObject);
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX - 1, 0.1f, hitPosZ - 1);
+					break;
+				case 2:
+					moveDownAndLeft (hitPosX, hitPosZ, hit.collider.gameObject);
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX + 1, 0.1f, hitPosZ - 1);
+					break;
+			}
+		}
+
+		void AIRandomUpBothDirections (int hitPosX, int hitPosZ) {
+			System.Random r = new System.Random ();
+			switch (r.Next (3)) 
+			{
+				case 1:
+					moveUpAndLeft (hitPosX, hitPosZ, hit.collider.gameObject);
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX - 1, 0.1f, hitPosZ - 1);
+					break;
+				case 2:
+					moveUpAndRight (hitPosX, hitPosZ, hit.collider.gameObject);
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX - 1, 0.1f, hitPosZ + 1);
+					break;
+			}
+		}
+
+		void AIRandomRightBothDirections (int hitPosX, int hitPosZ) {
+			System.Random r = new System.Random ();
+			switch (r.Next (3)) 
+			{
+				case 1:
+					moveUpAndRight (hitPosX, hitPosZ, hit.collider.gameObject);
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX - 1, 0.1f, hitPosZ + 1);
+					break;
+				case 2:
+					moveDownAndRight (hitPosX, hitPosZ, hit.collider.gameObject);
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX + 1, 0.1f, hitPosZ + 1);
+					break;
+			}
+		}
+
+		void AIRandomUpAndRightOrDownAndLeft (int hitPosX, int hitPosZ) {
+			System.Random r = new System.Random ();
+			switch (r.Next (3)) 
+			{
+				case 1:
+					moveUpAndRight (hitPosX, hitPosZ, hit.collider.gameObject);
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX - 1, 0.1f, hitPosZ + 1);
+					break;
+				case 2:
+					moveDownAndLeft (hitPosX, hitPosZ, hit.collider.gameObject);
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX + 1, 0.1f, hitPosZ - 1);
+					break;
+			}
+		}
+
+		void AIRandomUpAndLeftOrDownAndRight (int hitPosX, int hitPosZ) {
+			System.Random r = new System.Random ();
+			switch (r.Next (3)) 
+			{
+				case 1:
+					moveUpAndLeft (hitPosX, hitPosZ, hit.collider.gameObject);
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX - 1, 0.1f, hitPosZ - 1);
+					break;
+				case 2:
+					moveDownAndRight (hitPosX, hitPosZ, hit.collider.gameObject);
+					hit.collider.gameObject.transform.position = new Vector3 (hitPosX + 1, 0.1f, hitPosZ + 1);
+					break;
 			}
 		}
 	}

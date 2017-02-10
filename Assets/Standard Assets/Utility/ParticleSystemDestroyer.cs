@@ -38,11 +38,10 @@ namespace UnityStandardAssets.Utility
             }
             Debug.Log("stopping " + name);
 
-            // turn off emission
-            foreach (var system in systems)
-            {
-                system.enableEmission = false;
-            }
+			ParticleSystem ps = GetComponent<ParticleSystem>();
+			var em = ps.emission;
+			em.enabled = true;
+            
             BroadcastMessage("Extinguish", SendMessageOptions.DontRequireReceiver);
 
             // wait for any remaining particles to expire
