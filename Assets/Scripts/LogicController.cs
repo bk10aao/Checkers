@@ -123,5 +123,20 @@ namespace Application {
 			}
 			return false;
 		}
+
+		public Boolean playerHasMoveablePieces (int playerNumber, Board gameBoard) {
+			int i = 0, j = 0;
+			while (j < 8) {
+				while (i < 8) {
+					if (canMove(i, j, gameBoard) && gameBoard.returnPlayerPiece (i, j).playerNo == playerNumber) {
+						return true;
+					}
+					i++;
+				}
+				j++;
+				i = 0;
+			}
+			return false;
+		}
 	}
 }

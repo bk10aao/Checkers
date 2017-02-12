@@ -43,22 +43,29 @@ namespace Application {
 			} else {
 				if (playerNo == 2 && playerTwoPieceCount > 0) {
 					System.Threading.Thread.Sleep (500);
-					if (logic.playerHasTakeableMoves (2, gameBoard))
+					//check to see if the game if in a draw state
+					if (!logic.playerHasMoveablePieces (1, gameBoard) && !logic.playerHasTakeableMoves (1, gameBoard) && playerOnePieceCount != 0) {
+						setAiText ("Draw");
+					} else if (logic.playerHasTakeableMoves (2, gameBoard))
 						AITake (); 
 					else
 						aiSearchImplementation ();
 				} else {
 					getTakeablePlayerPieces ();
 					getMoveablePlayerPieces ();
-					if (Input.GetMouseButtonDown (0)) {
-						if ((Physics.Raycast (ray, out hit)) && hit.collider.tag.Contains ("Player" + playerNo.ToString ()))
-							getMoveProperties ();
-						else
-							interactionPiece = null;
-					} else if (Input.GetMouseButtonUp (0) && interactionPiece != null && Physics.Raycast (ray, out hit)) {
-						int endPointX = (int)hit.collider.transform.localPosition.x;
-						int endPointZ = (int)hit.collider.transform.localPosition.z;
-						implementPlayerClickRelease (endPointX, endPointZ);
+					if(!logic.playerHasMoveablePieces (2, gameBoard) && !logic.playerHasTakeableMoves (2, gameBoard) && playerTwoPieceCount != 0) {
+						setAiText ("Draw");
+					} else {
+						if (Input.GetMouseButtonDown (0)) {
+							if ((Physics.Raycast (ray, out hit)) && hit.collider.tag.Contains ("Player" + playerNo.ToString ()))
+								getMoveProperties ();
+							else
+								interactionPiece = null;
+						} else if (Input.GetMouseButtonUp (0) && interactionPiece != null && Physics.Raycast (ray, out hit)) {
+							int endPointX = (int)hit.collider.transform.localPosition.x;
+							int endPointZ = (int)hit.collider.transform.localPosition.z;
+							implementPlayerClickRelease (endPointX, endPointZ);
+						}
 					}
 				}
 			}
@@ -210,11 +217,15 @@ namespace Application {
 			}
 			playerOnePieceCount--;
 			if (playerOnePieceCount == 0) {
-				aiText.text = "AI Opponent won!!";
-				aiText.enabled = true;
+				setAiText ("AI Opponent won!!");
 			}
 		}
 
+		private void setAiText(String s) {
+			aiText.text = s;
+			aiText.enabled = true;
+			aiText.transform.position = new Vector3 (0.375f, 0.525f, 0f);
+		}
 		private void takeWithAiPiece (RaycastHit hit, int moveToXPos, int moveToZPos) {
 			destroyPiece ((int)hit.transform.position.x, (int)hit.transform.position.z, moveToXPos, moveToZPos);
 			PlayerPiece piece = gameBoard.returnPlayerPiece ((int)hit.transform.position.x, (int)hit.transform.position.z);
@@ -385,8 +396,7 @@ namespace Application {
 				playerTwoPieceCount--;
 			}
 			if (playerTwoPieceCount == 0) {
-				aiText.text = "Player One Won!!";
-				aiText.enabled = true;
+				setAiText("Player One Won!!");
 			}
 		}
 
